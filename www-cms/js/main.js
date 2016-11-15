@@ -6,4 +6,12 @@ function ready(cb) {
 
 ready(function(){
 
+    var App = {
+        "init": function() {
+            this._applicationDbContext = ApplicationDbContext; // Reference to the ApplicationDbContext object
+            this._applicationDbContext.init('ahs.dds.cms'); // Intialize the ApplicationDbContext with the connection string as parameter value
+        }
+    };
+
+    App.init();
 });
