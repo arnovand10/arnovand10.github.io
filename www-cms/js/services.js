@@ -62,7 +62,7 @@ var ApplicationDbContext = {
     "softDeletePost":function(id){
     	//post veranderen van database
 
-    }
+    },
     
     "softUnDelePost":function(id){
     	//post terug zetten van database
