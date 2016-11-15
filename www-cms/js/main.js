@@ -18,9 +18,9 @@ ready(function(){
             if(this._applicationDbContext.getPosts() == null) {
                 // CREATE POST
                 var post = new Post();
-                post.Title = document.getElementById("title").value();
-                post.Synopsis = document.getElementById("synopsis").value();
-                post.Story = document.getElementById("story").value();
+                post.Title = document.getElementById("title").value;
+                post.Synopsis = document.getElementById("synopsis").value;
+                post.Story = document.getElementById("story").value;
                 console.log(post.Title + post.Synopsis + post.Story + "test");
                 var postAdded = this._applicationDbContext.addPost(post);
                 console.log(postAdded);
