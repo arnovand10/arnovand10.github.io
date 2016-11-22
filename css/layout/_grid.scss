@@ -4,5 +4,7 @@ $columns: 12;
     width: 100% / ($columns/$i);
     display: block;
     float: left;
+    margin-left: 2%;
+  	margin-right: 2%;
    }
 }

@@ -8,11 +8,11 @@ port        : 4000
 
 # SEO
 # ---
-title      : &title NMDAD-I
+title      : &title WAF
 description: "New Media Design & Development I at Artevelde University College Ghent"
 author     : Arno van Den Bossche
 tracking_id: "UA-79628300-1"
-# url        :
+url        : "http://127.0.0.1:4000/index.html"
 # image      :
 
 # Build settings
@@ -33,7 +33,11 @@ kramdown:
 sass:
   sass_dir: ./css
   style: compressed
+include: 
+  ['_pages']
 exclude:
   - Gemfile
   - LICENSE
   - README.md
+permalink:
+  browse/:title

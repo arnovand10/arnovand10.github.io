@@ -15,6 +15,7 @@ html {
   line-height: 1.15; /* 2 */
   -ms-text-size-adjust: 100%; /* 3 */
   -webkit-text-size-adjust: 100%; /* 3 */
+  overflow: auto;
 }
 
 /* Sections
@@ -26,6 +27,9 @@ html {
 
 body {
   margin: 0;
+  padding: 0;
+  overflow: auto;
+  background-color: white;
 }
 
 /**
