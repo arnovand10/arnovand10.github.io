@@ -1,4 +1,15 @@
----
-layout: default
----
-{{content}}
+<!DOCTYPE html>
+<html>
+	{% include head.html %}
+	<body>
+	{% include header.html %}
+		<main id="main" role="main">
+			{{content}}
+		</main>
+		{%include footer.html%}
+		<script src="../js/core.js"></script>
+		<script src="../js/utils.js"></script>
+		<script src="../js/models.js"></script>
+		<script src="../js/main.js"></script>
+	</body>
+</html>
