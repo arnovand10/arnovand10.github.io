@@ -1,4 +1,15 @@
+.hamburger{
+	display: block;
+	position: fixed;
+	top: 8px;
+	right: 8px;
+	opacity: 0.3;
+	a{
+		color: $blauw;
+	}
+}
 aside{
+	display: none;
 	position: fixed;
 	background-color: rgba(30,30,30,0.3);
 	height: 100vh;

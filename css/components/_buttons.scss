@@ -1,0 +1,40 @@
+.btn{
+	margin-top: 6%;
+	width: 100%;
+	background-color: $blauw;
+	border: solid $grijs 2px;
+	text-transform: uppercase;
+	font: "Arial";
+	font-weight: bold;
+	font-size: 1rem;
+	a{
+		color: white;
+		text-decoration: none;
+	}
+}
+
+#btnreg{
+	background-color: transparent;
+	border: solid $blauw 2px;
+	a{
+		color: $blauw;
+	}
+}
+
+#regreg{
+	height: 2rem;
+}
+
+.btn_X{
+	width: 10%;
+	padding-top: 11%;
+	padding-bottom: 11%;
+	color: white;
+	font-size: bold;
+	background-color: $blauw;
+	border: none;
+}
+
+.btnprofiel{
+	height: 7vh;
+}

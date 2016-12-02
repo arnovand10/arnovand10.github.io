@@ -1,6 +1,47 @@
 // -----------------------------------------------------------------------------
 // This file contains styles that are specific to the home page.
 // -----------------------------------------------------------------------------
-body{
-	
+.bhome{
+	margin:0;
+	z-index: -1;
+	position: absolute;
+	height: 100vh;
+	width: 100vw;
+	background-image: url("img/home.png");
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: 0% 100%;
+	attachment: fixed;
 }
+.home{
+	
+	div{
+		display: block;
+		height: 45%;
+		h1,h2,h3{
+			font-family: "MV Boli";
+			margin: 0;
+		}
+		h1{
+			font-size: 4em;;
+			color: $geel;
+			text-align: left;
+		}
+		h2{
+			color: $grijs;
+			text-align: center;
+		}
+		h3{
+			color: $blauw;
+			text-align: right;
+			padding-top: 1rem;
+			font-size: 1rem;
+		}
+	}
+}
+
+.form_home{
+	margin-left: 10%;
+	width: 80%;
+}
+

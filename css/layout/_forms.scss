@@ -1,0 +1,14 @@
+form{
+	input,label{
+		width: 100%;
+		margin-top: 2%;
+		margin-bottom: 2%;
+		color: $blauw;
+		font-size: 1rem;
+	}
+
+	input{
+		border: 2px solid $blauw;
+		background-color: white;
+	}
+}
