@@ -1,17 +1,51 @@
 .hamburger{
+	z-index: 999;
 	display: block;
 	position: fixed;
-	top: 8px;
-	right: 8px;
-	opacity: 0.3;
-	a{
-		color: $blauw;
+	right:0;
+	top: 2vh;
+	opacity: 1;
+	padding: 2%;
+	i{
+		color: $grijs;
 	}
 }
-aside{
-	display: none;
+.navigatie{
 	position: fixed;
-	background-color: rgba(30,30,30,0.3);
+	z-index: -100;
+	opacity: 0;
+	background-color: $blauw;
+	right: 0;
 	height: 100vh;
-	min-height: 100vh;
+	width: 90vw;
+	ul{
+		padding: 0;
+		h3{
+			padding-left: 10%;
+			color: white;
+		}
+		li{
+			width: 100%;
+			list-style-type: none;
+			background-color: $blauw;
+			margin-bottom: 1%;
+			height: 6vh;
+			border-bottom: 2px solid white;
+
+			a{
+				display: block;
+				padding-left: 10%;
+				text-decoration: none;
+				color: white;
+				font-size: 1rem;
+				i{
+					text-align: center;
+					padding-right: 10%;
+					height: 100%;
+					line-height: 1.8rem;
+					float: right;
+				}
+			}
+		}	
+	}
 }

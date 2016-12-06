@@ -10,7 +10,7 @@ port        : 4000
 # ---
 title      : "WAF"
 description: "New Media Design & Development I at Artevelde University College Ghent"
-author     : Arno van Den Bossche
+author     : Arno van Den Bossche & Bjorn Truye
 tracking_id: "UA-79628300-1"
 url        : "http://127.0.0.1:4000/index.html"
 # image      :

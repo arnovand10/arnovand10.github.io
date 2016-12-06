@@ -1,6 +1,7 @@
-<script src="{{'js/jquery-3.1.1.min.js'}}"></script>
-<script src="{{'js/waypoint/lib/jquery.waypoints.min.js'}}"></script>
-<script src="{{'js/waypoint.js'}}"></script>
-<script src="{{'js/main.js' | site.baseurl}}"></script>
-<script src="{{'js/smoothscroll.js'}}"></script>
-<script src="{{'js/parallax.js'}}"></script>
+<script src="{{'/js/jquery-3.1.1.min.js' | 'prepend: site.baseurl'}}"></script>
+<script src="{{'/js/waypoint/lib/jquery.waypoints.min.js' | 'prepend: site.baseurl'}}"></script>
+<script src="{{'/js/waypoint.js'| 'prepend: site.baseurl'}}"></script>
+<script src="{{'/js/main.js' | | 'prepend: site.baseurl'}}"></script>
+<script src="{{'/js/smoothscroll.js'| 'prepend: site.baseurl'}}"></script>
+<script src="{{'/js/parallax.js'| 'prepend: site.baseurl'}}"></script>
+<script src="{{'/js/navigation.js' | 'prepend: site.baseurl'}}"></script>

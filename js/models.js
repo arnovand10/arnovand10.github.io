@@ -42,7 +42,7 @@ var Tinderizes = {
 	}
 };
 
-function TinderizeActiviteit{
+function TinderizeActiviteit(){
 	this.UserId;
 	this.LecturerId;
 	this.Tinderize;

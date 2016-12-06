@@ -2,8 +2,8 @@ var Profile = [
 	{
 		"id":0,
 		"gebruikersnaam" : "uitdatabasehalen",
-		"wachtwoord",
-		"profielfoto",
+		"wachtwoord":"",
+		"profielfoto":"",
 		"hondnaam" : "uitdatabasehalen",
 		"hondras" : "uitdatabasehalen",
 		"locatie": "geomap",
