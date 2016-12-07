@@ -40,12 +40,11 @@
 	ul{
 		width: 60% !important;
 	}
-	.profilepic{
+	.profilepic>img{
 		float:left;
 		height: 14vh;
 		width: 28%;
-		background-image: url("img/boxer-1339305_640.jpg");
-		background-size: 100% 100%;
+		height: auto;
 		background-repeat: no-repeat;
 		border: none;
 		margin-left: 1%;

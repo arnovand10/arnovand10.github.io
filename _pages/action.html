@@ -4,6 +4,51 @@ title: kies activiteit
 ---
 
 <section class="action">
+	<h3>Voeg een activiteit toe</h3>
+	<form action="" class="form_action">
+	<label for="activiteit">Kies activiteit</label>
+		<select name="activiteit" id="activiteit">
+			<option value="kies">Kies een activiteit</option>
+			<option value="uitlaten">uitlaten</option>
+			<option value="oppassen">oppassen</option>
+			<option value="ontmoeten">ontmoeten</option>
+		</select>
+		
+		<label for="hond">Hond:</label>
+		<input type="text" name="hond" value="blacky" disabled id="hondnaam">
+		<label for="locatie" class="straatnaam">Straatnaam:</label>
+		<label for="nummer" class="nummer">Nr:</label>
+		<input type="text" name="locatie" placeholder="Straatnaam" class="straatnaam">
+		
+		<input type="number" name="nummer" placeholder="Nr" class="nummer">
+		<div id="tijd">
+			<label for="startdatum" class="tijd">Start datum:</label>
+			<label for="startuur" class="tijd rechts">Start uur:</label>
+			<input type="date" name="startdatum" class="tijd">
+			<input type="time" name="startuur" class="tijd rechts">
+
+			<label for="stopdatum" class="tijd">Eind datum:</label>
+			<label for="stopuur" class="tijd rechts">Eind uur:</label>
+			<input type="date" name="startdatum" class="tijd">
+			<input type="time" name="storpuur" class="tijd rechts">
+				
+		</div>
+
+		<label for="herhaling" class="herhaling">Herhaling:</label>
+		<select name="herhaling" class="herhaling">
+			<option value="geen">geen herhaling</option>
+			<option value="dagelijks">dagelijks</option>
+			<option value="wekelijks">wekelijks</option>
+			<option value="maandelijks">maandelijks</option>
+		</select>		
+		
+		<input type="submit" name="toevoegen" value="toevoegen"	class="btn">
+	</form>
+</section>
+
+
+<!-- 
+<section class="action">
 	<h3>Zoek naar activiteiten</h3>
 	<ul class="zoek">
 		<li>
@@ -58,3 +103,5 @@ oppassen flaticon-dog-and-pets-house"></i>
 	</ul>
 
 </section>
+
+-->

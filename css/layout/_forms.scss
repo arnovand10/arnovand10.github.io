@@ -1,5 +1,5 @@
 form{
-	input,label{
+	input,label,select{
 		width: 100%;
 		margin-top: 2%;
 		margin-bottom: 2%;
@@ -12,5 +12,62 @@ form{
 		border: 2px solid $blauw;
 		background-color: white;
 		padding: 6px 12px;
+	}
+}
+
+.form_action{
+
+	label{
+		margin: 0;
+		width: 46vw;
+	}
+
+	select{
+		width: 100%;
+		border: 2px solid $blauw;
+		background-color: white;
+		padding: 6px 12px;
+		right: 0;
+	}
+	select>option{
+		width: 200vw;
+		left: 0;
+		overflow: hidden;
+	}
+
+	.straatnaam{
+		width: 70vw;
+	}
+
+	.nummer{
+		width:20vw;
+		float: right;
+	}
+
+	.tijd{
+		float: left;
+		width: 40vw;
+	}
+
+	.rechts{
+		float: right;
+	}
+
+	#tijd{
+		width: 100%;
+		margin: 0;
+	}
+
+	#tijd>label{
+		margin: 0;
+		width: 40vw;
+	}
+
+	.herhaling{
+		display: block;
+	}
+
+	.btn{
+		color: white;
 	}
 }

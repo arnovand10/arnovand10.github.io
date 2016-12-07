@@ -1,5 +1,6 @@
 $(".register").css("opacity","0");
 $(".bregister").css("opacity","0");
+$(".bhome").css("opacity","0");
 
 var top = window.
 $(".wregister").waypoint(function(){
@@ -23,4 +24,10 @@ $(".wabout").waypoint(function(){
 		opacity: "1"
 	},2000);
 	console.log("waypoint");
+});
+
+$("main").waypoint(function(){
+	$(".bhome").animate({
+		opacity: 1
+	},1000)
 });
