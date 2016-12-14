@@ -1,6 +1,11 @@
 /**
  * Basic typography style for copy text
  */
+@font-face{
+	font-family:"Mv Boli";
+	src: url("mvboli.tiff") format("truetype");
+}
+
 body {
   font: normal 125% / 1.4 $text-font-stack;
 }
