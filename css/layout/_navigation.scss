@@ -3,33 +3,40 @@
 	display: block;
 	position: fixed;
 	right:0;
-	top: 2vh;
 	opacity: 1;
-	padding: 2%;
+	padding: 5px;
+	top: 0;
 	i{
 		color: $grijs;
 	}
 }
 .navigatie{
+	box-shadow: -2px 0px 5px #888888;
 	position: fixed;
 	z-index: 100;
 	right: -70vw;
-	background-color: $blauw;
-	height: 100vh;
+	background-color: $blauw;;
+	top: 50px;
+	height: 90vh;
 	width: 70vw;
 	ul{
 		padding: 0;
+		margin:0;
 		h3{
-			padding-left: 10%;
+			font-size:1.2rem;
+			padding-left: 5%;
 			color: white;
+			margin: 0;
+			padding-top: 2vh;
+			padding-bottom: 2vh;
 		}
 		li{
 			width: 100%;
 			list-style-type: none;
 			background-color: $blauw;
-			margin-bottom: 1%;
-			height: 6vh;
-			border-bottom: 1px solid white;
+			padding-bottom: 1%;
+			height: 8vh;
+			border-top: 1px solid rgba(22,51,79,1);
 
 			a{
 				display: block;
@@ -37,13 +44,14 @@
 				text-decoration: none;
 				color: white;
 				font-size: 1rem;
-				line-height: 1.8rem;
+				line-height: 2.5rem;
 				i{
-					text-align: center;
-					padding-right: 5%;
+					width: 6vw;
+					text-align: left;
+					padding-right: 15%;
 					height: 100%;
-					line-height: 1.8rem;
-					float: right;
+					line-height: 2.5rem;
+					float: left;
 				}
 			}
 		}	

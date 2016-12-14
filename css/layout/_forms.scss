@@ -7,7 +7,7 @@ form{
 		font-size: 1rem;
 	}
 
-	input{
+	input,select{
 
 		border: 2px solid $blauw;
 		background-color: white;
@@ -15,52 +15,46 @@ form{
 	}
 }
 
-.form_action{
+.form_home{
+	margin-left: 10%;
+	width: 80%;
+}
 
+
+.form_action{
+	margin-left: 10%;
+	width: 80%;
 	label{
 		margin: 0;
 		width: 46vw;
 	}
 
-	select{
-		width: 100%;
-		border: 2px solid $blauw;
-		background-color: white;
-		padding: 6px 12px;
-		right: 0;
-	}
-	select>option{
-		width: 200vw;
-		left: 0;
-		overflow: hidden;
-	}
-
 	.straatnaam{
-		width: 70vw;
+		width: 43vw;
 	}
 
 	.nummer{
-		width:20vw;
+		width:23vw;
 		float: right;
 	}
 
 	.tijd{
+		width: 43vw;
 		float: left;
-		width: 40vw;
 	}
 
 	.rechts{
 		float: right;
+		width: 23vw;
 	}
 
 	#tijd{
-		width: 100%;
+		
 		margin: 0;
 	}
 
 	#tijd>label{
 		margin: 0;
-		width: 40vw;
 	}
 
 	.herhaling{
@@ -70,4 +64,10 @@ form{
 	.btn{
 		color: white;
 	}
+}
+
+#bestandkiezen{
+	border:0;
+	margin: 0;
+	padding: 0;
 }

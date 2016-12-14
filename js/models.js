@@ -1,16 +1,15 @@
 function Profile(){
-	this.Id;
-    this.FirstName;
-    this.SurName;
-    this.DogName;
-    this.DogRace;
-    this.Status;
+	this.id;
+    this.gebruikersnaam;
+    this.wachtwoord;
+    this.email;
+    this.profielfoto;
+    this.hondnaam;
+    this.hondras;
+    this.locatie;
+    this.status;
 
-    this.UserName;
-    this.PassWord;
-    this.Location;
-    
-
+      
     this.CreatedAt;
     this.UpdatedAt;
     this.DeletedAt;
@@ -30,7 +29,7 @@ function Activiteit(){
 	this.DeletedAt;
 }
 
-
+/*
 var Tinderizes = {
 	NEUTRAAL: 0,
 	ACCEPTEER: 1,
@@ -50,4 +49,4 @@ function TinderizeActiviteit(){
 	this.CreatedAt;
 	this.UpdatedAt;
 	this.DeletedAt;
-}
+}*/

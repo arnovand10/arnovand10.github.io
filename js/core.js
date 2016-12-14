@@ -1,11 +1,13 @@
+/*
+
 var Profile = [
 	{
 		"id":0,
-		"gebruikersnaam" : "uitdatabasehalen",
-		"wachtwoord":"",
-		"profielfoto":"",
-		"hondnaam" : "uitdatabasehalen",
-		"hondras" : "uitdatabasehalen",
+		"gebruikersnaam" : "LoremIpsum",
+		"wachtwoord":"MijnWachtWoord",
+		"profielfoto":"http://loremflickr.com/320/240/dog",
+		"hondnaam" : "Blacky",
+		"hondras" : "Teckle",
 		"locatie": "geomap",
 		"status": [
 			{"activiteit":"uitarrayhalen"},
