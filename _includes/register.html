@@ -2,15 +2,16 @@
 <section class="register">
 <h1 id="register">Registreren</h1>
 <p class="col-12">Nog geen gebruiker? Aarzel niet om je te registreren en word deel van een geweldige community!</p>
+<p class="placeholderErrorMessage"></p>
 <form action="" class="form_register">
 	<label for="reguser" >Username:</label>
-	<input type="text" name="reguser" placeholder="Gebruikersnaam" >
+	<input type="text" name="reguser" placeholder="Gebruikersnaam" required>
 	<label for="email" >Email-adres:</label>
-	<input type="text" name="email" placeholder="Email">
+	<input type="text" name="email" placeholder="Email" required>
 	<label for="regpass" >Wachtwoord:</label>
-	<input type="password" name="regpass" placeholder="Wachtwoord">
+	<input type="password" name="regpass" placeholder="Wachtwoord" required>
 	<label for="reregpass">Re-Wachtwoord:</label>
-	<input type="password" name="reregpass" placeholder="Wachtwoord" >
+	<input type="password" name="reregpass" placeholder="Wachtwoord" required>
 	<button class="btn" id="regreg">Registreer</button>
 </form>
 </section>

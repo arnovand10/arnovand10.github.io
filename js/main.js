@@ -169,35 +169,80 @@ ready(function(){
 		        var _regEmail = Utils.trim(document.querySelector('[name="email"]').value);
 		        var _regPass = Utils.trim(document.querySelector('[name="regpass"]').value);
 		        var _regRePass = Utils.trim(document.querySelector('[name="reregpass"]').value);
+                
+                //p tag wordt vervangen door errormessage
+                var _errorMessage = document.querySelector(".placeholderErrorMessage");
+                _errorMessage.style.color = "red";
 
+                //borders normale kleur geven (anders blijven ze rood, ookal zijn ze na een fout gecorrigeerd)
+                document.querySelectorAll(".form_register>input")[0].style.border = "2px solid rgba(52,95,137,1)";
+                document.querySelectorAll(".form_register>input")[1].style.border = "2px solid rgba(52,95,137,1)";
+                document.querySelectorAll(".form_register>input")[2].style.border = "2px solid rgba(52,95,137,1)";
+                document.querySelectorAll(".form_register>input")[3].style.border = "2px solid rgba(52,95,137,1)";
+
+                
+                
 	        	//checken of alle waardes ingevuld zijn en _regPass == _regRePass
-	        	if(_regPass!="" && _regEmail!="" && _regUser!="" && _regRePass!="" && _regPass==_regRePass){
-	        		//check of username al bestaat| neen => ok | ja=> niets doen
-	        		var getUser = self._applicationDbContext.getProfileByUserName(_regUser);
-	        		if(getUser==null || getUser==undefined){
-	        			//toevoegen van gebruikers
-	        			var profile = new Profile();
-	        			profile.gebruikersnaam = _regUser;
-	        			profile.email = _regEmail;
-	        			profile.wachtwoord = _regPass;
-	        			var addedprofile = self._applicationDbContext.addProfile(profile);
-	        			if(addedprofile != null){
-	        				//window.location = "index.html/#home";
-	        				console.log("gebruiker toegevoegd");
-	        			}else{
-	        				console.log("fout bij profiel toevoegen");
-	        				return false;
-	        			}
-	        		}else{
-	        			console.log("gebruikersnaam al in gebruik");
-	        			return false;
-	        		}
-	        	}else{
+	        	if(_regPass!="" && _regEmail!="" && _regUser!="" && _regRePass!=""){
+                    if(_regPass==_regRePass){
+
+
+    	        		//check of username al bestaat| neen => ok | ja=> niets doen
+    	        		var getUser = self._applicationDbContext.getProfileByUserName(_regUser);
+    	        		if(getUser==null || getUser==undefined){
+    	        			//toevoegen van gebruikers
+    	        			var profile = new Profile();
+    	        			profile.gebruikersnaam = _regUser;
+    	        			profile.email = _regEmail;
+    	        			profile.wachtwoord = _regPass;
+    	        			var addedprofile = self._applicationDbContext.addProfile(profile);
+    	        			if(addedprofile != null){
+                                document.querySelector("#btnreg>a").innerHTML = "Geregistreerd";
+    	        				window.location = "index.html";
+    	        				console.log("gebruiker toegevoegd");
+                                return true;
+    	        			}
+                            else{
+                                _errorMessage.innerHTML = "Interne fout bij het registreren.";
+    	        				console.log("fout bij profiel toevoegen");
+    	        				return false;
+    	        			}
+    	        		}
+                        else{
+                            _errorMessage.innerHTML = "Gebruikersnaam al in gebruik.";
+                            //focus in textveld zetten en rode rend geven
+                            document.querySelector('[name="reguser"').focus();
+                            document.querySelectorAll(".form_register>input")[0].style.border = "2px solid red";
+    	        			console.log("gebruikersnaam al in gebruik");
+    	        			return false;
+    	        		}
+                    }
+                    else{
+                        _errorMessage.innerHTML = "Passwoorden komen niet overeen.";
+                        document.querySelector('[name="regpass"').focus();
+                        document.querySelectorAll(".form_register>input")[2].style.border = "2px solid red";
+                        document.querySelectorAll(".form_register>input")[3].style.border = "2px solid red";
+                        console.log("wachtwoorden zijn niet identiek");
+                        return false;
+                    }
+                }
+                else{
+                    _errorMessage.innerHTML = "Gelieve alle velden correct in te vullen.";
+                    document.querySelector('[name="reguser"').focus();
+                    //document.querySelector('[name="reguser"').style.border = "2px solid red";
+                    document.querySelectorAll(".form_register>input")[0].style.border = "2px solid red";
+                    document.querySelectorAll(".form_register>input")[1].style.border = "2px solid red";
+                    document.querySelectorAll(".form_register>input")[2].style.border = "2px solid red";
+                    document.querySelectorAll(".form_register>input")[3].style.border = "2px solid red";
+                    console.log(_borderUser);
 	        		console.log("niet alle waardes ingevuld");
 	        		return false;
-	        		}
+	        	}
+
         	});
         },
+
+
 
         "findActiveUserId":function(activeuser){
         	var i = 0;
