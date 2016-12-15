@@ -28,13 +28,16 @@
 }
 
 .btn_X{
-	width: 10%;
-	padding-top: 11%;
-	padding-bottom: 11%;
+	width: 20%;
+	height: 20%;
+	padding-top: 15.5%;
+	padding-bottom: 15.5%;
 	color: white;
 	font-size: bold;
 	background-color: $blauw;
 	border: none;
+	position: relative;
+	float: right;
 }
 
 .btnprofiel{

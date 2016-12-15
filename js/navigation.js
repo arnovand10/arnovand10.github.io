@@ -38,4 +38,21 @@
 		$(".hamburger").children().addClass("fa-bars");
 		console.log("child click");
 	});
+
+	$(".toggleMap").click(function(){
+		if(this.innerHTML == "Map"){
+			this.innerHTML = "Lijst";
+			$(".browseList").css('visibility','hidden');
+			$(".browseList").css('z-index',"-50");
+			$(".map").css('visibility','visible');
+			$(".map").css('z-index','0');
+		}else{
+			this.innerHTML = "Map";
+			$(".map").css('visibility','hidden');
+			$(".map").css('z-index',"-50");
+			$(".browseList").css('visibility','visible');
+			$(".browseList").css('z-index','0');
+		}
+		
+	});
 })();

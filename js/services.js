@@ -20,7 +20,7 @@ var applicationDbContext = {
             "profiles":[
                 {
                     "id":0,
-                    "gebruikersnaam" : "Gebruiker0",
+                    "gebruikersnaam" : "BartSmith",
                     "wachtwoord":"MijnWachtWoord",
                     "email":"Gebruiker0@hotmail.com",
                     "profielfoto":"http://loremflickr.com/320/240/dog",
@@ -32,7 +32,7 @@ var applicationDbContext = {
                 {
                 
                     "id":1,
-                    "gebruikersnaam" : "Gebruiker1",
+                    "gebruikersnaam" : "Jandeman",
                     "wachtwoord":"MijnWachtWoord",
                     "email":"Gebruiker1@gmail.com",
                     "profielfoto":"http://loremflickr.com/320/240/dog?random="+1,
@@ -44,26 +44,49 @@ var applicationDbContext = {
 
             ],
 
-            "activiteit":[
-            {
-                "activiteiten":[
-                    {"0":"uitlaten"},
-                    {"1":"oppassen"},
-                    {"2":"ontmoeten"},
-                ]
-            },
-            {"Hond":""},
-            {"Straatnaam":""},
-            {"Nummer":""},
-            {"startDatum":""},
-            {"startUur":""},
-            {"eindDatum":""},
-            {"eindUur":""},
-            {"herhaling":[
-                {"1":"dagelijks"},
-                {"2":"weekelijks"},
-                {"3":"maandelijks"},
-            ]},
+            "activiteiten":[
+                {
+                    "id":0,
+                    "status":"oppas",
+                    "locatie":"Korenmarkt",
+
+                    "gebruikerId":0,
+                    "gebruikerNaam":"BartSmith",
+                    "gebruikerHond":"Blacky",
+                    "gebruikerRas":"Teckle",
+
+                    "startDatum":"2017-1-8",
+                    "startUur":"15:20",
+                    "stopDatum":"2017-1-12",
+                    "stopUur":"16:20",
+                    "herhaling":"geen",
+
+                    "CreatedAt":"2016-12-15",
+                    "DeletedAt":"",
+
+
+                },
+                {
+                    "id":1,
+                    "status":"uitlaten",
+                    "locatie":"Gravesteen",
+
+                    "gebruikerId":1,
+                    "gebruikerNaam":"Jandeman",
+                    "gebruikerHond":"Woefke",
+                    "gebruikerRas":"Husky",
+
+                    "startDatum":"2017-1-10",
+                    "startUur":"16:00",
+                    "stopDatum":"2017-1-10",
+                    "stopUur":"18:00",
+                    "herhaling":"geen",
+
+                    "CreatedAt":"2016-12-15",
+                    "DeletedAt":"",
+
+
+                },
             ],
 
             "timetable":[],
@@ -104,6 +127,10 @@ var applicationDbContext = {
     "updateMyProfile":function(profile){
         var index = profile[0];
         var profielFoto = profile[1];
+        //als er geen profielfoto is ingevult hij placeholder value krijgen.
+        if(profielFoto==null || profielFoto == ""){
+            profielFoto = "../css/img/dog-placeholder.jpg";
+        }
         var profielStatus = profile[2];
         var profielLocatie = profile[3];
         var profielHondNaam = profile[4];
@@ -206,6 +233,58 @@ var applicationDbContext = {
     "setActiveUser":function(user){
         this._dbData.activeuser = user;
         this.save();
+    },
+    "addActivity":function(userId,actieId,actie,hondnaam,locatie,nr,startD,startU,stopD,stopU,repeat){
+        console.log(startU);
+        if(userId != null &&  userId!="" && actieId != null && actieId != ""){
+            
+            if(actie !=null  && actie != "" && hondnaam != null && hondnaam != ""){
+            
+                if(locatie!=null  && locatie!="" && startD!=null && startD!=""){
+            
+                    if(startU !=null  && startU !="" && stopD !=null && stopD !=""){
+            
+                        if(stopU!=null  && stopU!=""){
+                            //alles is ok => toevoegen in localstorage activiteiten.
+                            var activiteit = new Activiteit();
+                            activiteit.id = actieId;
+                            activiteit.status = actie;
+                            if(nr!=null && nr!=""){
+                                activiteit.locatie = locatie+" "+nr;    
+                            }else{
+                                activiteit.locatie = locatie;
+                            }
+                            
+                            
+                            activiteit.gebruikerId = userId;
+                            activiteit.gebruikerNaam = this._dbData.activeuser.gebruikersnaam;
+                            activiteit.gebruikerHond = hondnaam;
+                            activiteit.gebruikerRas = this._dbData.activeuser.hondras;
+
+                            activiteit.startDatum = startD;
+                            activiteit.startUur = startU;
+                            activiteit.stopDatum = stopD;
+                            activiteit.stopUur = stopU;
+                            if(repeat!=null && repeat !=""){
+                                activiteit.herhaling = repeat;    
+                            }else{
+                                activiteit.herhaling = "Geen";
+                            }
+
+                            activiteit.CreatedAt = new Date();
+
+                            this._dbData.activiteiten.push(activiteit);
+                            this.save();
+                            console.log(activiteit);
+
+                            
+                            return true;
+                        }
+                    }   
+                }
+            }
+        }
+        return null;
     },
 };
 

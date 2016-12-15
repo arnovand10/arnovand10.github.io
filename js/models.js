@@ -10,6 +10,9 @@ function Profile(){
     this.locatie;
     this.status;
 
+    this.mijnActiviteiten;
+
+
       
     this.CreatedAt;
     this.UpdatedAt;
@@ -17,16 +20,24 @@ function Profile(){
 }
 
 function Activiteit(){
-	this.Id;
-	this.Status;
-	this.Location;
+	this.id;
+	this.status;
+	this.locatie;
+	this.lat;
+	this.lng;
 
-	this.UserName;
-	this.DogName;
-	this.DogRace;
+	this.gebruikerId;
+	this.gebruikerNaam;
+	this.gebruikerHond;
+	this.gebruikerRas;
+
+	this.startDatum;
+	this.startUur;
+	this.stopDatum;
+	this.stopUur;
+	this.herhaling;
 
 	this.CreatedAt;
-	this.UpdatedAt;
 	this.DeletedAt;
 }
 

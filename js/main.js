@@ -86,6 +86,18 @@ ready(function(){
                 this.myProfilePageEdit();
             }
 
+            //action.html
+            this._actionPage = document.querySelector(".action");
+            if(this._actionPage != null){
+                this.actionEventListener();
+            }
+
+            //browse.html
+            this._browsePage = document.querySelector(".browse");
+            if(this._browsePage != null){
+                this.getActivities();
+            }
+
 
             if(this._unitTesting) {
                 this.unitTestProfiles(); // Unit Testing: profiles
@@ -349,6 +361,62 @@ ready(function(){
         	this._myprofileDog.innerHTML = this.profiles[activeId]["hondnaam"];
         	this._myprofileRace.innerHTML = this.profiles[activeId]["hondras"];
         	this._myprofileImage.style.backgroundImage = "url("+this.profiles[activeId]["profielfoto"]+")";
+        },
+
+        "actionEventListener":function(){
+            this._actionButton = document.querySelector("#activiteittoevoegen");
+            
+            document.querySelector('[name="hond"]').value = this._applicationDbContext._dbData.profiles[this._activeUser].hondnaam;
+
+            var self = this;
+            this._actionButton.addEventListener("click",function(ev){
+                ev.preventDefault();
+                var actionGebruikerId = self._applicationDbContext._dbData.activeuser.id;
+                var actionId = Utils.guid();
+                var actionActiviteit = document.querySelector('[name="activiteit"]').value;
+                var actionHond = document.querySelector('[name="hond"]').value;
+                var actionStraat = document.querySelector('[name="locatie"]').value;
+                var actionNummer = document.querySelector('[name="nummer"]').value;
+                var actionStartDatum = document.querySelector('[name="startdatum"]').value;
+                var actionStartUur = document.querySelector('[name="startuur"]').value;
+                var actionStopDatum = document.querySelector('[name="stopdatum"]').value;
+                var actionStopUur = document.querySelector('[name="stopuur"]').value;
+                var actionHerhaling = document.querySelector('[name="herhaling"]').value;
+                
+                var result = self._applicationDbContext.addActivity(actionGebruikerId,actionId,actionActiviteit,actionHond,actionStraat,actionNummer,actionStartDatum,actionStartUur,actionStopDatum,actionStopUur,actionHerhaling);
+                if(result != null){
+                    console.log("toegevoegd");
+                    window.location = "/_pages/browse.html";
+                }else{
+                    console.log("fout");
+                }
+            });   
+        },
+
+        "getActivities":function(){
+            var browseList = document.querySelector(".browseList");
+            //alle activiteiten ophalen;
+            var activiteit = this._applicationDbContext._dbData.activiteiten;
+            //voor elke activiteit, schrijf html code
+            console.log(activiteit.length);
+            var html;
+
+            for (var i =0; i < activiteit.length; i++) {
+                html += '<li class="activity">';
+                html += '<button class="btn_X"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></button>';
+                html += '<ul class="info_dtl">';
+                html += '<li><span>'+activiteit[i].status+'</span></li>';
+                html += '<li>Van: '+activiteit[i].startDatum+" "+activiteit[i].startUur+'</li>';
+                html += '<li>Tot: '+activiteit[i].stopDatum+" "+activiteit[i].stopUur+'</li>';
+               // html += '</ul>';
+               // html += '<ul class="info_user">';
+                html += '<li>Door: '+activiteit[i].gebruikerNaam+'</li>';
+                html += '<li>Hond: '+activiteit[i].gebruikerHond+' '+activiteit[i].gebruikerRas+'</li>'
+                html += '<li>Locatie: '+activiteit[i].locatie+'</li>';
+                html += '</ul>';
+                html += '</li>';
+                browseList.innerHTML = html;
+            }
         },
 
 

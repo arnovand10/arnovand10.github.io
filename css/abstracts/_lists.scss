@@ -1,4 +1,4 @@
-.activities,.profiles{
+.profiles{
 	$listBgColor: rgba(238,238,238,1);
 	font-size: 0.9rem;
 
@@ -91,6 +91,38 @@
 			i{
 				line-height: 10vh;
 				font-size: 1.5rem;
+			}
+		}
+	}
+}
+
+.browse, .activities{
+	$listBgColor: rgba(238,238,238,1);
+	font-size: 0.9rem;
+
+	ul{
+		position: relative;
+		right: 1%;
+		left: 2%;
+		margin-bottom: 0%;
+		padding: 0;
+		list-style-type: none;
+		.locatie{
+			width: 79%;
+			margin-left: 1%;
+			margin-right: 0;
+		}
+		.activity, .profile{
+			width: auto;
+			margin-bottom: 1%;
+			background-color: $listBgColor;
+			span{
+				font-weight: bold;
+			}
+			ul{
+				display: inline-block;
+				margin-left: 1%;
+				width: 79%;
 			}
 		}
 	}
