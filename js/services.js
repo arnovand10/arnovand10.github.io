@@ -19,7 +19,7 @@ var applicationDbContext = {
             
             "profiles":[
                 {
-                    "id":0,
+                    "id":3,
                     "gebruikersnaam" : "BartSmith",
                     "wachtwoord":"MijnWachtWoord",
                     "email":"BartSmith@hotmail.com",
@@ -57,11 +57,11 @@ var applicationDbContext = {
 
             "activiteiten":[
                 {
-                    "id":0,
+                    "id":3,
                     "status":"oppassen",
                     "locatie":"Korenmarkt",
 
-                    "gebruikerId":0,
+                    "gebruikerId":3,
                     "gebruikerNaam":"BartSmith",
                     "gebruikerHond":"Blacky",
                     "gebruikerRas":"Teckle",
@@ -266,16 +266,16 @@ var applicationDbContext = {
         this._dbData.activeuser = user;
         this.save();
     },
+
     "addActivity":function(userId,actieId,actie,hondnaam,locatie,nr,startD,startU,stopD,stopU,repeat){
-        console.log(startU);
         if(userId != null &&  userId!="" && actieId != null && actieId != ""){
-            
+            console.log("ok userId, actieId");
             if(actie !=null  && actie != "" && hondnaam != null && hondnaam != ""){
-            
+                console.log("ok actie, hondnaam");
                 if(locatie!=null  && locatie!="" && startD!=null && startD!=""){
-            
+                    console.log("ok locatie, startDatum");
                     if(startU !=null  && startU !="" && stopD !=null && stopD !=""){
-            
+                        console.log("ok startUur stop Uur");
                         if(stopU!=null  && stopU!=""){
                             //alles is ok => toevoegen in localstorage activiteiten.
                             var activiteit = new Activiteit();
@@ -315,8 +315,11 @@ var applicationDbContext = {
                     }   
                 }
             }
-        }
-        return null;
+        }else{
+            console.log(userId+" "+actieId);J
+            console.log("slechte Id's")
+            return null;    
+        } 
     },
 };
 

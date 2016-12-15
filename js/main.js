@@ -386,7 +386,6 @@ ready(function(){
                 var actionStopDatum = document.querySelector('[name="stopdatum"]').value;
                 var actionStopUur = document.querySelector('[name="stopuur"]').value;
                 var actionHerhaling = document.querySelector('[name="herhaling"]').value;
-                
                 var result = self._applicationDbContext.addActivity(actionGebruikerId,actionId,actionActiviteit,actionHond,actionStraat,actionNummer,actionStartDatum,actionStartUur,actionStopDatum,actionStopUur,actionHerhaling);
                 if(result != null){
                     console.log("toegevoegd");
@@ -483,16 +482,33 @@ ready(function(){
                     //als activiteitId == activeuserId => verwijderen
                     if(gebruikerId == self._applicationDbContext._dbData.activeuser.id){
                         //ga door alle activiteiten;
-                        console.log("min");
-                        for(var j=0; j<this._applicationDbContext._dbData.ativiteiten.length;j++){
-                            //als activiteitId == id 
-                            
+                        for(var j=0; j<self._applicationDbContext._dbData.activiteiten.length;j++){
+                            //als activiteitId == id -> delete activiteit
+                            var activiteitId = this.parentElement["id"];
+                            console.log(self._applicationDbContext._dbData.activiteiten[j]);
+                            if(activiteitId==self._applicationDbContext._dbData.activiteiten[j].id){
+                                //delete op plaats j
+                                self._applicationDbContext._dbData.activiteiten.splice(j,1);
+                                self._applicationDbContext.save();
+                            }
                         }
                     }
                     //als activiteitId != activeuserId => opslaan
                     else if(gebruikerId != self._applicationDbContext._dbData.activeuser.id){
-                        console.log("his");
+                        //ga door alle activiteiten;
+                        console.log("min");
+                        for(var j=0; j<self._applicationDbContext._dbData.activiteiten.length;j++){
+                            //als activiteitId == id -> save activiteit
+                            var activiteitId = this.parentElement["id"];
+                            if(activiteitId==self._applicationDbContext._dbData.activiteiten[j].id){
+                                //opslaan op plaats j
+                                self._applicationDbContext._dbData.profiles[j].opgeslagenActiviteiten = self._applicationDbContext._dbData.activiteiten[j];
+                                self._applicationDbContext.save();
+                            }
+                        }
                     }
+                    self.getActivities();
+                    self.addOrDeleteActivities();
                 });
             }
         },

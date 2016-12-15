@@ -11,7 +11,7 @@ function Profile(){
     this.status;
 
     this.mijnActiviteiten;
-
+    this.opgeslagenActiviteiten;
 
       
     this.CreatedAt;
