@@ -101,11 +101,35 @@ var applicationDbContext = {
         }
         return null;
     },
+    "updateMyProfile":function(profile){
+        var index = profile[0];
+        var profielFoto = profile[1];
+        var profielStatus = profile[2];
+        var profielLocatie = profile[3];
+        var profielHondNaam = profile[4];
+        var profielHondRas = profile[5];
+        var profielEmail = profile[6];
+        console.log(profile);
+        if(index == -1){
+            return false;
+        }
+        profile.UpdatedAt = new Date().getTime();
+        this._dbData.profiles[index].profielfoto = profielFoto;
+        this._dbData.profiles[index].status = profielStatus;
+        this._dbData.profiles[index].locatie = profielLocatie;
+        this._dbData.profiles[index].hondnaam = profielHondNaam;
+        this._dbData.profiles[index].hondras = profielHondRas;
+        this._dbData.profiles[index].email = profielEmail;
+        this.save();
+        return true;
+    },
+
     "updateProfile": function(profile) {
         var index = this.findProfileIndexById(profile.Id);
         if(index == -1) {
             return false;
         }
+
         profile.UpdatedAt = new Date().getTime();
         this._dbData.profiles[index] = profile;
         this.save();

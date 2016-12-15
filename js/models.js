@@ -4,6 +4,7 @@ function Profile(){
     this.wachtwoord;
     this.email;
     this.profielfoto;
+    this.rating;
     this.hondnaam;
     this.hondras;
     this.locatie;

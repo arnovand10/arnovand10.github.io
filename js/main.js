@@ -60,6 +60,7 @@ ready(function(){
             this._myprofileDog = document.querySelector('.myDog');
             this._myprofileRace = document.querySelector('.myRace');
             this._myprofileImage = document.querySelector('.myImage');
+            this._myprofileBtn=  document.querySelector(".myprofileAanpassen");
             //check of we op myprofile.html pagina zijn
             if(this._myprofilePage!=null){
             	//check of er een active user is
@@ -68,12 +69,21 @@ ready(function(){
             		console.log(this._applicationDbContext._dbData.activeuser["id"]);
             		//this.updateUIMyProfile(this._applicationDbContext._dbData.activeuser["id"]);	
             		this.updateUIMyProfile(this._activeUser);
+
+                    //check of er op de profielaanpassen knop gedrukt wordt
+                    this.myprofilePageBtnEventListener();
             	}
             	//geen active user -> redirect naar home
             	else{
             		window.location = "/index.html/#home";
             	}
-            	
+            }
+
+            //editmyprofile.html
+            this._myProfilePageEdit = document.querySelector('.myprofilePageEdit');
+            if(this._myProfilePageEdit != null){
+                this._btnEdit = document.querySelector('.btnEditMyProfile');
+                this.myProfilePageEdit();
             }
 
 
@@ -117,14 +127,19 @@ ready(function(){
                     var result = self._userManager.login(userName, passWord);
                     console.log(result);
                     if(result == null) {
+                        document.querySelector('[name="user"]').style.border = "2px solid red";
+                        document.querySelector('[name="pass"]').style.border = "2px solid red";
                     	console.log("niets gevonden of leeg veld");
                     } else if(result == false) {
+                        document.querySelector('[name="user"]').style.border = "2px solid red";
+                        document.querySelector('[name="pass"]').style.border = "2px solid red";
                     	console.log("gebruikersnaam en wachtwoord komen niet overeen");
                     } else {
                         self._activeUser = result; // User is Logged in
                         self._applicationDbContext._dbData.activeuser = result;
                         self._applicationDbContext.save();
                         self.updateUI();
+                        return self._activeUser;
                     }
                     
                     return false;
@@ -135,8 +150,72 @@ ready(function(){
         },
 
         "updateUI":function(){
+            //wanneer ingelogd update de navigatie
         	document.querySelector(".inlogNav").style.visibility = "visible";
-        	window.location = "/_pages/myprofile.html";
+            //check of het de 1ste keer is dat de gebruiker inlogt
+            //als het de 1ste keer is, redirect naar edit my profile
+        	if(this._activeUser.lastLogin == ""){
+                this.updateLastLoginById(this._activeUser.id);
+                window.location = "/_pages/editmyprofile.html";
+                console.log(this._activeUser.id);
+            }else{
+                this.updateLastLoginById(this._activeUser.id);
+                window.location = "/_pages/myprofile.html";
+                console.log(this._activeUser.id);
+            }
+        },
+
+        "updateLastLoginById":function(activeId){
+            //alle profielen doorlopen, en zoeken waar de activeuserID = profileID
+            for(var i=0;i<this._applicationDbContext._dbData.profiles.length;i++){
+                if(this._applicationDbContext._dbData.profiles[i].id == activeId){
+                    //gevonden -> update last login
+                    this._applicationDbContext._dbData.profiles[i].lastLogin = new Date();
+                    this._applicationDbContext.save();
+                }
+            }
+            
+        },
+
+        "myprofilePageBtnEventListener":function(){
+            this._myprofileBtn.addEventListener("click",function(ev){
+                ev.preventDefault();
+                window.location = "/_pages/editmyprofile.html";
+            });
+        },
+
+        "myProfilePageEdit":function(){
+            //textvelden upvullen met de profiel waardes uit de localstorage
+
+            console.log(this._applicationDbContext._dbData.profiles[this._activeUser]);
+            document.querySelector('[name="foto"]').value =  this._applicationDbContext._dbData.profiles[this._activeUser].profielfoto;
+            document.querySelector('[name="status"]').value =  this._applicationDbContext._dbData.profiles[this._activeUser].status;
+            document.querySelector('[name="locatie"]').value =  this._applicationDbContext._dbData.profiles[this._activeUser].locatie;
+            document.querySelector('[name="hond"]').value =  this._applicationDbContext._dbData.profiles[this._activeUser].hondnaam;
+            document.querySelector('[name="ras"]').value =  this._applicationDbContext._dbData.profiles[this._activeUser].hondras;
+            document.querySelector('[name="email"').value = this._applicationDbContext._dbData.profiles[this._activeUser].email;
+            //wanneer er op de knop gedrukt wordt, textveld values opvragen en opslaan in database
+            var self = this;
+            this._btnEdit.addEventListener("click",function(ev){
+                ev.preventDefault();
+                //waardes uit textvelden halen
+                var profileId = self._activeUser;
+                var profilePic = Utils.trim(document.querySelector('[name="foto"]').value);
+                var profileStatus = Utils.trim(document.querySelector('[name="status"]').value);
+                var profileLocatie = Utils.trim(document.querySelector('[name="locatie"]').value);
+                var profileHondNaam = Utils.trim(document.querySelector('[name="hond"]').value);
+                var profileHondRas = Utils.trim(document.querySelector('[name="ras"]').value);
+                var profileEmail =  Utils.trim(document.querySelector('[name="email"]').value);
+                
+                //textveld values in array stoppen en meegeven aan functie updateMyProfile()
+                var profileEdited = [profileId,profilePic,profileStatus,profileLocatie,profileHondNaam,profileHondRas, profileEmail];
+
+                var result = self._applicationDbContext.updateMyProfile(profileEdited);
+                if(result!=null){
+                    window.location = "/_pages/myprofile.html";
+                }
+                
+            });
         },
 
         "logoutEventListeners":function(){
@@ -195,6 +274,17 @@ ready(function(){
     	        			profile.gebruikersnaam = _regUser;
     	        			profile.email = _regEmail;
     	        			profile.wachtwoord = _regPass;
+                            profile.profielfoto = "../css/img/dog-placeholder.jpg";
+                            profile.status = "";
+                            profile.locatie = "";
+                            profile.rating = "";
+                            profile.hondnaam = "";
+                            profile.hondras = "";
+                            profile.CreatedAt = new Date();
+                            profile.lastLogin = "";
+                            
+
+
     	        			var addedprofile = self._applicationDbContext.addProfile(profile);
     	        			if(addedprofile != null){
                                 document.querySelector("#btnreg>a").innerHTML = "Geregistreerd";
