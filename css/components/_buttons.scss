@@ -28,14 +28,14 @@
 }
 
 .btn_X{
+	padding-top: 50px;
+	padding-bottom: 50px;
 	width: 20%;
 	height: 20%;
-	padding-top: 15.5%;
-	padding-bottom: 15.5%;
-	color: white;
-	font-size: bold;
-	background-color: $blauw;
 	border: none;
+	color: $blauw;
+	background-color: transparent;
+	font-size: 1.5rem;
 	position: relative;
 	float: right;
 }

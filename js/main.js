@@ -95,7 +95,11 @@ ready(function(){
             //browse.html
             this._browsePage = document.querySelector(".browse");
             if(this._browsePage != null){
-                this.getActivities();
+                this._activiteiten = this.getActivities();
+                this.filterActivities(this._activiteiten);
+                if(this._activiteiten != null){
+                    this.addOrDeleteActivities();
+                }
             }
 
 
@@ -394,28 +398,102 @@ ready(function(){
         },
 
         "getActivities":function(){
-            var browseList = document.querySelector(".browseList");
+            
             //alle activiteiten ophalen;
+            var browseList = document.querySelector(".browseList");
             var activiteit = this._applicationDbContext._dbData.activiteiten;
-            //voor elke activiteit, schrijf html code
-            console.log(activiteit.length);
-            var html;
+            for(var i=0; i<activiteit.length;i++){
+                        var html;
+                            //als activegebruikerId = gebruikerID van de actie (degine die het gepost heeft)
+                            //veranderd de style
+                            //er wordt een id waarde toegekent aan de button en activiteit -> bij het klikken kan 
+                            //dan makkelijk gezien worden bij welke activiteit welke button hoord. 
+                            //zie addOrDeleteActivity();
+                            if(activiteit[i].gebruikerId == this._applicationDbContext._dbData.activeuser.id){
+                                html += '<li class="activity"  id="'+activiteit[i].id+'" style="background-color: #345f89; color:white;">';
+                                html += '<button class="btn_X" id="'+activiteit[i].gebruikerId+'"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: white"; ></i></button>';    
+                            }else{
+                                html += '<li class="activity"  id="'+activiteit[i].id+'">';
+                                html +='<button class="btn_X" id="'+activiteit[i].gebruikerId+'"><i class="fa fa-floppy-o fa-lg" aria-hidden="true" ></i></button>';    
+                            }
+                            
+                            html += '<ul class="info_dtl">';
+                            html += '<li><span>'+activiteit[i].status+'</span></li>';
+                            html += '<li>Van: '+activiteit[i].startDatum+" "+activiteit[i].startUur+'</li>';
+                            html += '<li>Tot: '+activiteit[i].stopDatum+" "+activiteit[i].stopUur+'</li>';
+                           // html += '</ul>';
+                           // html += '<ul class="info_user">';
+                            html += '<li>Door: '+activiteit[i].gebruikerNaam+'</li>';
+                            html += '<li>Hond: '+activiteit[i].gebruikerHond+' '+activiteit[i].gebruikerRas+'</li>'
+                            html += '<li>Locatie: '+activiteit[i].locatie+'</li>';
+                            html += '</ul>';
+                            html += '</li>';
+                            browseList.innerHTML = html;
+                }
+            return activiteit;
+        },
 
-            for (var i =0; i < activiteit.length; i++) {
-                html += '<li class="activity">';
-                html += '<button class="btn_X"><i class="fa fa-trash fa-lg" aria-hidden="true"></i></button>';
-                html += '<ul class="info_dtl">';
-                html += '<li><span>'+activiteit[i].status+'</span></li>';
-                html += '<li>Van: '+activiteit[i].startDatum+" "+activiteit[i].startUur+'</li>';
-                html += '<li>Tot: '+activiteit[i].stopDatum+" "+activiteit[i].stopUur+'</li>';
-               // html += '</ul>';
-               // html += '<ul class="info_user">';
-                html += '<li>Door: '+activiteit[i].gebruikerNaam+'</li>';
-                html += '<li>Hond: '+activiteit[i].gebruikerHond+' '+activiteit[i].gebruikerRas+'</li>'
-                html += '<li>Locatie: '+activiteit[i].locatie+'</li>';
-                html += '</ul>';
-                html += '</li>';
-                browseList.innerHTML = html;
+        "filterActivities":function(activiteiten){
+            
+            var activiteit = activiteiten;
+            var self = this;
+            console.log(activiteit);
+            //wanneer de waarde van de filter is aangepast
+            var browseList = document.querySelector(".browseList");
+            var filterValue = document.querySelector('[name="activiteit"]');
+            filterValue.addEventListener("change",function(ev){
+                console.log("change");
+                //doorloop alle activiteiten
+                //toon enkel digene waar de activiteit.status == filter.value
+                for(var i=0; i<activiteit.length;i++){
+                    if(activiteit[i].status == filterValue.value || filterValue.value == ""){
+                        var html;
+                            if(activiteit[i].gebruikerId == self._applicationDbContext._dbData.activeuser.id){
+                                html += '<li class="activity"  id="'+activiteit[i].id+'" style="background-color: #345f89; color:white;">';
+                                html += '<button class="btn_X" id="'+activiteit[i].gebruikerId+'"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: white"; ></i></button>';    
+                            }else{
+                                html += '<li class="activity"  id="'+activiteit[i].id+'">';
+                                html +='<button class="btn_X" id="'+activiteit[i].gebruikerId+'"><i class="fa fa-floppy-o fa-lg" aria-hidden="true" ></i></button>';    
+                            }
+                            html += '<ul class="info_dtl">';
+                            html += '<li><span>'+activiteit[i].status+'</span></li>';
+                            html += '<li>Van: '+activiteit[i].startDatum+" "+activiteit[i].startUur+'</li>';
+                            html += '<li>Tot: '+activiteit[i].stopDatum+" "+activiteit[i].stopUur+'</li>';
+                           // html += '</ul>';
+                           // html += '<ul class="info_user">';
+                            html += '<li>Door: '+activiteit[i].gebruikerNaam+'</li>';
+                            html += '<li>Hond: '+activiteit[i].gebruikerHond+' '+activiteit[i].gebruikerRas+'</li>'
+                            html += '<li>Locatie: '+activiteit[i].locatie+'</li>';
+                            html += '</ul>';
+                            html += '</li>';
+                            browseList.innerHTML = html;
+                    }
+                }
+            });
+        },
+
+        "addOrDeleteActivities":function(){
+            var self= this;
+            //doorloop alle aanwezige buttons, en voeg er een eventlistener aan toe
+            var activiteitBtn = document.querySelectorAll(".btn_X");
+            for(var i=0; i<this._applicationDbContext._dbData.activiteiten.length;i++){
+                activiteitBtn[i].addEventListener("click",function(ev){
+                    //this["id"] geeft de id  weer van de gebruikers post waar op geklikt is
+                    var gebruikerId = this["id"];
+                    //als activiteitId == activeuserId => verwijderen
+                    if(gebruikerId == self._applicationDbContext._dbData.activeuser.id){
+                        //ga door alle activiteiten;
+                        console.log("min");
+                        for(var j=0; j<this._applicationDbContext._dbData.ativiteiten.length;j++){
+                            //als activiteitId == id 
+                            
+                        }
+                    }
+                    //als activiteitId != activeuserId => opslaan
+                    else if(gebruikerId != self._applicationDbContext._dbData.activeuser.id){
+                        console.log("his");
+                    }
+                });
             }
         },
 

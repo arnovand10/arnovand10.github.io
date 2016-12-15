@@ -22,7 +22,7 @@ var applicationDbContext = {
                     "id":0,
                     "gebruikersnaam" : "BartSmith",
                     "wachtwoord":"MijnWachtWoord",
-                    "email":"Gebruiker0@hotmail.com",
+                    "email":"BartSmith@hotmail.com",
                     "profielfoto":"http://loremflickr.com/320/240/dog",
                     "hondnaam" : "Blacky",
                     "hondras" : "Teckle",
@@ -34,20 +34,31 @@ var applicationDbContext = {
                     "id":1,
                     "gebruikersnaam" : "Jandeman",
                     "wachtwoord":"MijnWachtWoord",
-                    "email":"Gebruiker1@gmail.com",
+                    "email":"Jandeman@gmail.com",
                     "profielfoto":"http://loremflickr.com/320/240/dog?random="+1,
                     "hondnaam" : "Woefke",
                     "hondras" : "Husky",
                     "locatie": "geomap",
                     "status": "Zoekt uitlater",
-                }
+                },
+                {
+                    "id":2,
+                    "gebruikersnaam" : "Jolien23",
+                    "wachtwoord":"MijnWachtWoord",
+                    "email":"Jolien23@gmail.com",
+                    "profielfoto":"http://loremflickr.com/320/240/dog?random="+1,
+                    "hondnaam" : "Sloef",
+                    "hondras" : "Duitseherder",
+                    "locatie": "geomap",
+                    "status": "Zoekt ontmoeting",
+                },
 
             ],
 
             "activiteiten":[
                 {
                     "id":0,
-                    "status":"oppas",
+                    "status":"oppassen",
                     "locatie":"Korenmarkt",
 
                     "gebruikerId":0,
@@ -80,6 +91,27 @@ var applicationDbContext = {
                     "startUur":"16:00",
                     "stopDatum":"2017-1-10",
                     "stopUur":"18:00",
+                    "herhaling":"geen",
+
+                    "CreatedAt":"2016-12-15",
+                    "DeletedAt":"",
+
+
+                },
+                {
+                    "id":2,
+                    "status":"ontmoeten",
+                    "locatie":"Gravesteen",
+
+                    "gebruikerId":2,
+                    "gebruikerNaam":"Jolien23",
+                    "gebruikerHond":"Sloef",
+                    "gebruikerRas":"Duitseherder",
+
+                    "startDatum":"2017-1-13",
+                    "startUur":"16:00",
+                    "stopDatum":"2017-1-13",
+                    "stopUur":"17:00",
                     "herhaling":"geen",
 
                     "CreatedAt":"2016-12-15",
