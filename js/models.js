@@ -37,28 +37,8 @@ function Activiteit(){
 	this.stopUur;
 	this.herhaling;
 
+	this.acceptorId;
+
 	this.CreatedAt;
 	this.DeletedAt;
 }
-
-/*
-var Tinderizes = {
-	NEUTRAAL: 0,
-	ACCEPTEER: 1,
-	OPSLAAN: 2,
-	properties: {
-		0:{id:0, name:"Neutraal"},
-		1:{id:1, name:"Accepteer"},
-		2:{id:2, name:"Opslaan"}
-	}
-};
-
-function TinderizeActiviteit(){
-	this.UserId;
-	this.LecturerId;
-	this.Tinderize;
-
-	this.CreatedAt;
-	this.UpdatedAt;
-	this.DeletedAt;
-}*/

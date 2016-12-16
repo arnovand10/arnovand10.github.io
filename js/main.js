@@ -102,6 +102,12 @@ ready(function(){
                 }
             }
 
+            //activities.html
+            this._savedActivitiesPage = document.querySelector(".activities");
+            if(this._savedActivitiesPage != null){
+                this._savedActivities = this.getSavedActivities();
+            }
+
 
             if(this._unitTesting) {
                 this.unitTestProfiles(); // Unit Testing: profiles
@@ -132,7 +138,7 @@ ready(function(){
             }
         },
 
-         "loginEventListeners": function() {
+        "loginEventListeners": function() {
             // Event Listeners for Form Login
             if(this._formLogin != null) {
                 var self = this; // Hack for this keyword within an event listener of another object
@@ -298,6 +304,7 @@ ready(function(){
                             profile.hondras = "";
                             profile.CreatedAt = new Date();
                             profile.lastLogin = "";
+                            profile.opgeslagenActiviteiten = [];
                             
 
 
@@ -369,7 +376,6 @@ ready(function(){
 
         "actionEventListener":function(){
             this._actionButton = document.querySelector("#activiteittoevoegen");
-            
             document.querySelector('[name="hond"]').value = this._applicationDbContext._dbData.profiles[this._activeUser].hondnaam;
 
             var self = this;
@@ -386,13 +392,20 @@ ready(function(){
                 var actionStopDatum = document.querySelector('[name="stopdatum"]').value;
                 var actionStopUur = document.querySelector('[name="stopuur"]').value;
                 var actionHerhaling = document.querySelector('[name="herhaling"]').value;
-                var result = self._applicationDbContext.addActivity(actionGebruikerId,actionId,actionActiviteit,actionHond,actionStraat,actionNummer,actionStartDatum,actionStartUur,actionStopDatum,actionStopUur,actionHerhaling);
-                if(result != null){
-                    console.log("toegevoegd");
-                    window.location = "/_pages/browse.html";
+                if(actionHond != null && actionHond !=""){
+                    var result = self._applicationDbContext.addActivity(actionGebruikerId,actionId,actionActiviteit,actionHond,actionStraat,actionNummer,actionStartDatum,actionStartUur,actionStopDatum,actionStopUur,actionHerhaling);
+                    if(result != null){
+                        console.log("toegevoegd");
+                        window.location = "/_pages/browse.html";
+                    }else{
+                        document.querySelector(".placeholderErrorMessage").innerHTML = "Gelieve alle waardes correct in te vullen";
+                        console.log("fout");
+                    }    
                 }else{
-                    console.log("fout");
+                    document.querySelector('[name="hond"]').style.border = "2px solid red";
+                    document.querySelector('[name="hond"').placeholder ="U moet een hond toevoegen";
                 }
+                
             });   
         },
 
@@ -411,7 +424,8 @@ ready(function(){
                             if(activiteit[i].gebruikerId == this._applicationDbContext._dbData.activeuser.id){
                                 html += '<li class="activity"  id="'+activiteit[i].id+'" style="background-color: #345f89; color:white;">';
                                 html += '<button class="btn_X" id="'+activiteit[i].gebruikerId+'"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: white"; ></i></button>';    
-                            }else{
+                            }
+                            else{
                                 html += '<li class="activity"  id="'+activiteit[i].id+'">';
                                 html +='<button class="btn_X" id="'+activiteit[i].gebruikerId+'"><i class="fa fa-floppy-o fa-lg" aria-hidden="true" ></i></button>';    
                             }
@@ -436,7 +450,6 @@ ready(function(){
             
             var activiteit = activiteiten;
             var self = this;
-            console.log(activiteit);
             //wanneer de waarde van de filter is aangepast
             var browseList = document.querySelector(".browseList");
             var filterValue = document.querySelector('[name="activiteit"]');
@@ -472,6 +485,7 @@ ready(function(){
         },
 
         "addOrDeleteActivities":function(){
+            var saved = false;
             var self= this;
             //doorloop alle aanwezige buttons, en voeg er een eventlistener aan toe
             var activiteitBtn = document.querySelectorAll(".btn_X");
@@ -490,26 +504,137 @@ ready(function(){
                                 //delete op plaats j
                                 self._applicationDbContext._dbData.activiteiten.splice(j,1);
                                 self._applicationDbContext.save();
+                                this.parentElement.remove();
                             }
                         }
                     }
                     //als activiteitId != activeuserId => opslaan
                     else if(gebruikerId != self._applicationDbContext._dbData.activeuser.id){
+                        
+                        this.innerHTML = '<i class="fa fa-check-circle fa-lg" aria-hidden="true"></i>';
+                        
                         //ga door alle activiteiten;
-                        console.log("min");
                         for(var j=0; j<self._applicationDbContext._dbData.activiteiten.length;j++){
-                            //als activiteitId == id -> save activiteit
+                            //als activiteitId meegegeven in de html == id van de activiteit in de database -> save activiteit in myactivities
+                            //de activiteitId wordt via het li element meegegeven dat de parent van de button is
                             var activiteitId = this.parentElement["id"];
                             if(activiteitId==self._applicationDbContext._dbData.activiteiten[j].id){
-                                //opslaan op plaats j
-                                self._applicationDbContext._dbData.profiles[j].opgeslagenActiviteiten = self._applicationDbContext._dbData.activiteiten[j];
-                                self._applicationDbContext.save();
+                                
+                                //doorloop alle profielen
+                                for(var k=0; k<self._applicationDbContext._dbData.profiles.length;k++){
+                                //selecteer mijn profiel
+                                if(self._applicationDbContext._dbData.profiles[k].id == self._applicationDbContext._dbData.activeuser.id){
+                                    //voeg aan de activiteit de Id van de gebruiker die de activiteit GEACCEPTEERD heeft
+                                    self._applicationDbContext._dbData.activiteiten[j].acceptorId = self._applicationDbContext._dbData.activeuser.id;
+                                    
+                                    
+                
+                
+
+
+                                    //sla de activiteit op in profile[x].opgeslagenActiviteiten
+                                    //dit is een array -> de length wordt opgevragen, deze geeft bv 5 weer
+                                    //aangezien array 0based telt, heeft het 5de element , index 4 ([4])
+                                    //DUS: savedActivities[nieuweIndex] zal altijd op de laatste index +1 de waarde stoppen;
+                                    var savedActivities = self._applicationDbContext._dbData.profiles[k].opgeslagenActiviteiten;
+                                    //var nieuweIndex = savedActivities.length;
+                                    savedActivities.push(self._applicationDbContext._dbData.activiteiten[j]);
+                                    self._applicationDbContext.save();
+                                    console.log(self._applicationDbContext._dbData);
+                                    saved = true;
+                                    }
+
+
+
+                                    //voeg dit ook toe aan de activiteit van de CREATOR in zijn opgeslagen activiteiten
+                                    //doorloop alle activiteiten
+                                    //als de profielId == creatorId =>
+                                    //doorloop al zijn opgeslagen activiteiten
+                                    //als opgeslagenId == activiteitenId =>
+                                    //verander acceptorId
+                                    if(saved==true){
+                                    for(var x =0; x<self._applicationDbContext._dbData.activiteiten.length;x++){
+                                        if(self._applicationDbContext._dbData.profiles[k].id == self._applicationDbContext._dbData.activiteiten[x].gebruikerId){
+                                            console.log(self._applicationDbContext._dbData.profiles[k].id+"=="+self._applicationDbContext._dbData.activiteiten[x].gebruikerId);
+                                           for(var y=0; y<self._applicationDbContext._dbData.profiles[k].opgeslagenActiviteiten.length;y++){
+                                            console.log(self._applicationDbContext._dbData.profiles[k].opgeslagenActiviteiten[y].id+"=="+activiteitId);
+                                            if(self._applicationDbContext._dbData.profiles[k].opgeslagenActiviteiten[y].id == activiteitId){
+                                                console.log("opgeslagenId == activiteitenId");
+                                                self._applicationDbContext._dbData.profiles[k].opgeslagenActiviteiten[y].acceptorId =   self._applicationDbContext._dbData.activeuser.id;  
+                                                self._applicationDbContext.save();
+                                                }
+                                           }
+                                        }    
+                                    }}
+                                }
+                            
+                                //als de actie opgeslagen is in profile[x].opgeslagenActiviteiten dan moet de actie verwijderd worden uit activities
+                                if(saved == true){
+                                    self._applicationDbContext._dbData.activiteiten.splice(j,1);
+                                    self._applicationDbContext.save();
+                                }
                             }
                         }
                     }
-                    self.getActivities();
+                    //na verwijderen of opslaan -> weer alle activiteiten laden en 
+                    //checken of er wordt geklikt op save/delete
                     self.addOrDeleteActivities();
                 });
+            }
+        },
+
+        "getSavedActivities":function(){
+            console.log(this._applicationDbContext._dbData.profiles);
+
+
+            var browseList = document.querySelector(".savedActivitiesList");
+            //alle opgeslagen activiteiten van de user ophalen;
+            var profielen = this._applicationDbContext._dbData.profiles;
+
+            //checken data uit mijn profiel halen
+            for(var i=0; i<profielen.length;i++){
+                if(profielen[i].id == this._applicationDbContext._dbData.activeuser.id){
+                    //profiel gevonden -> alle opgeslagen activiteiten doorlopen
+                    for(var j=0; j<profielen[i].opgeslagenActiviteiten.length;j++){
+                       var activiteit = profielen[i].opgeslagenActiviteiten[j];
+                       var html;
+                        //als activegebruikerId = gebruikerID van de actie (degine die het gepost heeft)
+                            //veranderd de style
+                            //er wordt een id waarde toegekent aan de button en activiteit -> bij het klikken kan 
+                            //dan makkelijk gezien worden bij welke activiteit welke button hoord. 
+                            //zie addOrDeleteActivity();
+                            
+                            html += '<li class="activity"  id="'+activiteit.id+'">';
+                            html += '<button class="btn_X" id="'+activiteit.gebruikerId+'"><i class="fa fa-trash fa-lg" aria-hidden="true" ></i></button>';    
+                            
+                            
+                            html += '<ul class="info_dtl">';
+                            html += '<li><span>'+activiteit.status+'</span></li>';
+                            html += '<li>Van: '+activiteit.startDatum+" "+activiteit.startUur+'</li>';
+                            html += '<li>Tot: '+activiteit.stopDatum+" "+activiteit.stopUur+'</li>';
+                           // html += '</ul>';
+                           // html += '<ul class="info_user">';
+                            html += '<li>Door: '+activiteit.gebruikerNaam+'</li>';
+                            html += '<li>Hond: '+activiteit.gebruikerHond+' '+activiteit.gebruikerRas+'</li>'
+                            html += '<li>Locatie: '+activiteit.locatie+'</li>';
+                            //de gebruikersnaam van de persoon die de activiteit geaccepteerdheeft
+                            //de acceptorId werd meegestuurd -> daarmee gebruikersnaam opvragen
+                            console.log(activiteit.acceptorId);
+                            for(var k=0; k<this._applicationDbContext._dbData.profiles.length;k++){
+                                if(this._applicationDbContext._dbData.profiles[k].id==activiteit.acceptorId){
+                                    html+= '<li>Geaccepteerd door :'+this._applicationDbContext._dbData.profiles[k].gebruikersnaam+'</li>';
+                                    
+                                }
+                                console.log("acceptorId is "+activiteit.acceptorId);
+
+                            }
+                            html += '</ul>';
+                            html += '</li>';
+                            browseList.innerHTML = html;
+                            
+
+                    }
+                }
             }
         },
 

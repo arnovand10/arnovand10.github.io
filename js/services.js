@@ -28,6 +28,7 @@ var applicationDbContext = {
                     "hondras" : "Teckle",
                     "locatie": "geomap",
                     "status": "Zoekt oppas",
+                    "opgeslagenActiviteiten":[],
                 },
                 {
                 
@@ -40,6 +41,7 @@ var applicationDbContext = {
                     "hondras" : "Husky",
                     "locatie": "geomap",
                     "status": "Zoekt uitlater",
+                    "opgeslagenActiviteiten":[],
                 },
                 {
                     "id":2,
@@ -51,6 +53,7 @@ var applicationDbContext = {
                     "hondras" : "Duitseherder",
                     "locatie": "geomap",
                     "status": "Zoekt ontmoeting",
+                    "opgeslagenActiviteiten":[],
                 },
 
             ],
@@ -71,6 +74,8 @@ var applicationDbContext = {
                     "stopDatum":"2017-1-12",
                     "stopUur":"16:20",
                     "herhaling":"geen",
+
+                    "acceptorId":"",
 
                     "CreatedAt":"2016-12-15",
                     "DeletedAt":"",
@@ -93,6 +98,8 @@ var applicationDbContext = {
                     "stopUur":"18:00",
                     "herhaling":"geen",
 
+                    "acceptorId":"",
+
                     "CreatedAt":"2016-12-15",
                     "DeletedAt":"",
 
@@ -113,6 +120,8 @@ var applicationDbContext = {
                     "stopDatum":"2017-1-13",
                     "stopUur":"17:00",
                     "herhaling":"geen",
+
+                    "acceptorId":"",
 
                     "CreatedAt":"2016-12-15",
                     "DeletedAt":"",
@@ -297,6 +306,7 @@ var applicationDbContext = {
                             activiteit.startUur = startU;
                             activiteit.stopDatum = stopD;
                             activiteit.stopUur = stopU;
+                            activiteit.acceptorId = "";
                             if(repeat!=null && repeat !=""){
                                 activiteit.herhaling = repeat;    
                             }else{
@@ -305,9 +315,23 @@ var applicationDbContext = {
 
                             activiteit.CreatedAt = new Date();
 
+
+
+                            //in localstorage.activiteiten -> push (mijn aangemaakte activiteit);
+                            //maakt zichtbaar voor iedereen
                             this._dbData.activiteiten.push(activiteit);
+                            
+                            //activiteit aan opgeslagenActiviteiten toevoegen
+                            //mijn profiel opvragen
+                            for(var i =0; i<this._dbData.profiles.length;i++){
+                                if(this._dbData.activeuser.id == this._dbData.profiles[i].id){
+                                    //in mijn profiel.opgeslagenActiviteiten -> push( mijn aangemaakte activiteit);
+                                    this._dbData.profiles[i].opgeslagenActiviteiten.push(activiteit);
+                                }
+                            }
+                            
                             this.save();
-                            console.log(activiteit);
+                            console.log(this._dbData);
 
                             
                             return true;
