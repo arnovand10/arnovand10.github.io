@@ -42,3 +42,10 @@ function Activiteit(){
 	this.CreatedAt;
 	this.DeletedAt;
 }
+
+
+function Markers(){
+	this.id;
+	this.lat;
+	this.lng;
+}

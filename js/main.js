@@ -111,6 +111,13 @@ ready(function(){
                 }
             }
 
+            //hondenvoorzieningen.html
+            this._hondenvoorzieningenPage = document.querySelector(".hondenvoorzieningen");
+            if(this._hondenvoorzieningenPage != null){
+                GMap.init();
+            }
+            
+
 
             if(this._unitTesting) {
                 this.unitTestProfiles(); // Unit Testing: profiles
@@ -857,6 +864,7 @@ ready(function(){
                 });
             }
         },
+
 
         
         
