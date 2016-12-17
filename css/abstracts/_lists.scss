@@ -98,7 +98,7 @@
 
 .browse, .activities{
 	$listBgColor: rgba(238,238,238,1);
-	font-size: 0.9rem;
+	font-size: 1.2rem;
 
 	ul{
 		right: 1%;
@@ -118,6 +118,7 @@
 			background-color: $listBgColor;
 			span{
 				font-weight: bold;
+				text-transform: capitalize;
 			}
 			ul{
 				padding-top: 2%;

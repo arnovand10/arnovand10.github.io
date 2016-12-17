@@ -106,6 +106,9 @@ ready(function(){
             this._savedActivitiesPage = document.querySelector(".activities");
             if(this._savedActivitiesPage != null){
                 this._savedActivities = this.getSavedActivities();
+                if(this._savedActivities != null){
+                    this.deleteSavedActivities(this._savedActivities);
+                }
             }
 
 
@@ -504,6 +507,20 @@ ready(function(){
                             if(activiteitId==self._applicationDbContext._dbData.activiteiten[j].id){
                                 //delete op plaats j
                                 self._applicationDbContext._dbData.activiteiten.splice(j,1);
+                                //delete in opgeslagen activiteiten
+                                for(var x=0;x<self._applicationDbContext._dbData.profiles.length;x++){
+                                    if(self._applicationDbContext._dbData.profiles[x].id == self._applicationDbContext._dbData.activeuser.id){
+                                        for(var y=0;y<self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten.length;y++)
+                                        {
+                                            if(self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten[y].id == activiteitId){
+                                                self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten.splice(y,1);        
+                                            }
+                                        }
+                                        
+                                    }
+                                    
+                                }
+                                
                                 self._applicationDbContext.save();
                                 this.parentElement.remove();
                             }
@@ -596,7 +613,7 @@ ready(function(){
 
         "getSavedActivities":function(){
             console.log(this._applicationDbContext._dbData.profiles);
-
+            var arraySavedActivities = [];
 
             var browseList = document.querySelector(".savedActivitiesList");
             //alle opgeslagen activiteiten van de user ophalen;
@@ -614,10 +631,23 @@ ready(function(){
                             //er wordt een id waarde toegekent aan de button en activiteit -> bij het klikken kan 
                             //dan makkelijk gezien worden bij welke activiteit welke button hoord. 
                             //zie addOrDeleteActivity();
+                            if(activiteit.gebruikerId == this._applicationDbContext._dbData.activeuser.id){
+                                //als het acceptorId = "CANCELLED" -> li gele actergrond kleur
+                                if(activiteit.acceptorId == "CANCELED"){
+                                    html += '<li class="activity"  id="'+activiteit.id+'" style="background-color: rgba(255,157,0,1); color: white;">';
+                                    html += '<button class="btn_X" id="'+activiteit.gebruikerId+'" syle="background-color: #f7e13d;"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: white;"></i></button>';    
+                                }else{
+                                    html += '<li class="activity"  id="'+activiteit.id+'" style="background-color: #345F89; color: white;">';
+                                    html += '<button class="btn_X" id="'+activiteit.gebruikerId+'" syle="background-color: #345F89;"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: white;"></i></button>';    
+                                }
+                                
+                            }
                             
-                            html += '<li class="activity"  id="'+activiteit.id+'">';
-                            html += '<button class="btn_X" id="'+activiteit.gebruikerId+'"><i class="fa fa-trash fa-lg" aria-hidden="true" ></i></button>';    
                             
+                            else{
+                                html += '<li class="activity"  id="'+activiteit.id+'">';
+                                html += '<button class="btn_X" id="'+activiteit.gebruikerId+'"><i class="fa fa-times fa-lg" aria-hidden="true" ></i></button>';    
+                            }
                             
                             html += '<ul class="info_dtl">';
                             html += '<li><span>'+activiteit.status+'</span></li>';
@@ -630,24 +660,143 @@ ready(function(){
                             html += '<li>Locatie: '+activiteit.locatie+'</li>';
                             //de gebruikersnaam van de persoon die de activiteit geaccepteerdheeft
                             //de acceptorId werd meegestuurd -> daarmee gebruikersnaam opvragen
-                            console.log(activiteit.acceptorId);
-                            for(var k=0; k<this._applicationDbContext._dbData.profiles.length;k++){
-                                if(this._applicationDbContext._dbData.profiles[k].id==activiteit.acceptorId){
-                                    html+= '<li>Geaccepteerd door :'+this._applicationDbContext._dbData.profiles[k].gebruikersnaam+'</li>';
-                                }
-                                console.log("acceptorId is "+activiteit.acceptorId);
+                          
+                            
+                            
+                            
+                                for(var k=0; k<this._applicationDbContext._dbData.profiles.length;k++){
+                                    if(this._applicationDbContext._dbData.profiles[k].id==activiteit.acceptorId){
+                                        html+= '<li>Geaccepteerd door :'+this._applicationDbContext._dbData.profiles[k].gebruikersnaam+'</li>';
+                                    }
 
-                            }
+                                }
+                            
                             html += '</ul>';
+                            if(activiteit.acceptorId == "CANCELED"){
+                                html+= "<p id='warning'><strong>Info:De gebruiker heeft de acctiviteit geanulleerd, wij hebben uw activiteit weer zichtbaar gemaakt voor andere gebruikers.</strong></p>"
+                            }
                             html += '</li>';
                             browseList.innerHTML = html;
-                            
-
+                            arraySavedActivities[j] = activiteit;
                     }
                 }
             }
+        return arraySavedActivities;
         },
 
+        "deleteSavedActivities":function(arraySavedActivities){
+            var self = this;
+            var saved =false;
+            var btn_X = document.querySelectorAll(".btn_X");
+            //doorloop alle delete buttons, voeg eventlistener click aan toe
+            for(var i=0; i<btn_X.length;i++){
+                btn_X[i].addEventListener("click",function(ev){
+                    //this.["id"] = de id van de gebruiker die de post maakte;
+                    var activiteitCreatorId = this["id"];
+                    //this.parentElement["id"] = de id van de post;
+                    var activiteitId = this.parentElement["id"];
+                    console.log(activiteitId);
+                    //doorloop alle opgeslagen activiteiten in de local storage
+                    //als opgeslagenactiviteit.id == activiteitId
+                    //als er geen acceptor id aanwezig is mag deze post gedelete worden uit mijnopgeslagen activiteiten en browse
+                    //als er een acceptor id aanwezig is -> check of het de active user is of iemand anders
+                    //acceptor id == iemand anders => "CANCELED"
+                    //acceptor id == active user => "DELETED"
+                    //als acceptor id == "CANCELED" -> verander achtergrondkleur naar geel bij de creator's opgeslagen activiteiten + voet activiteit terug toe aan browse
+                    //als acceptor id == "DELETED" -> varander achtergrondkleur naar rood bij de acceptor's opgeslagen activiteiten
+                    for(var j=0; j<arraySavedActivities.length;j++){
+                        if(arraySavedActivities[j].id == activiteitId){
+                            //vanaf hier weten we op welke activiteit er geklikt is.
+                            //check of er een acceptor id is
+                            if(arraySavedActivities[j].acceptorId == "" || arraySavedActivities[j].acceptorId == null){
+                                //als er geen acceptorID is => delete uit mijnopgeslagen activiteit
+                                for(var x=0; x<self._applicationDbContext._dbData.profiles.length; x++){
+                                    if(self._applicationDbContext._dbData.profiles[x].id == self._applicationDbContext._dbData.activeuser.id){
+                                        for(var y=0;y<self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten.length;y++){
+                                            if(self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten[y].id == activiteitId){
+                                                self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten.splice(y,1);
+                                                console.log("deleted uit opgeslagenActiviteiten");
+                                                self._applicationDbContext.save();
+                                                this.parentElement.remove();
+                                            }
+                                        }
+                                    }
+                                }
+                                //doorloop alle activiteiten en delete deze activiteit uit browse;
+                                for(var x=0; x<self._applicationDbContext._dbData.activiteiten.length;x++){
+                                    if(self._applicationDbContext._dbData.activiteiten[x].id == activiteitId){
+                                        self._applicationDbContext._dbData.activiteiten.splice(x,1);
+                                        console.log("deleted uit browse");
+                                        self._applicationDbContext.save();
+                                    }
+                                }
+                            }
+                            //als er een acceptorId aanwezig is
+                            else if(arraySavedActivities[j].acceptorId != "" || arraySavedActivities[j].acceptorId != null){
+                                //check of de acceptorId == activeuserId
+                                //M.A.W. check of ik de activiteit heb geaccepteerd
+                                //-> ik annuleer de activiteit
+                                if(arraySavedActivities[j].acceptorId == self._applicationDbContext._dbData.activeuser.id){
+                                    console.log("geaccepteerdDoorMij");
+                                    for(var x=0; x<self._applicationDbContext._dbData.profiles.length;x++){
+                                        if(self._applicationDbContext._dbData.profiles[x].id == self._applicationDbContext._dbData.activeuser.id){
+                                            console.log("profiel gevonden");
+                                            for(var y=0; y<self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten.length;y++){
+                                                if(self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten[y].id == activiteitId){
+                                                                                                        
+                                                    //ga door de profielen en zoek naar de crator van de activiteit
+                                                    for(var a=0; a<self._applicationDbContext._dbData.profiles.length;a++){
+                                                        if(self._applicationDbContext._dbData.profiles[a].id == self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten[y].gebruikerId){
+                                                            console.log(a);
+                                                            //profiel Creator gevonden -> ga door zijn opgeslagenActiviteiten
+                                                            console.log("creator gevonden");
+                                                            //zoeken tussen opgeslagenActiviteiten
+                                                            for(var b=0; b<self._applicationDbContext._dbData.profiles[a].opgeslagenActiviteiten.length;b++){
+                                                                //zoek waar opgeslagenActiviteiten.id = activiteitId
+                                                                if(self._applicationDbContext._dbData.profiles[a].opgeslagenActiviteiten[b].id == activiteitId){
+                                                                    //gevondend -> zet de acceptorId van de activiteit van de creator op CANCELED
+                                                                    self._applicationDbContext._dbData.profiles[a].opgeslagenActiviteiten[b].acceptorId = "CANCELED";
+                                                                    //zet de activiteit terug in de browse pagina
+                                                                    self._applicationDbContext._dbData.activiteiten.push(self._applicationDbContext._dbData.profiles[a].opgeslagenActiviteiten[b]);
+                                                                    console.log(self._applicationDbContext._dbData.profiles[a].opgeslagenActiviteiten[b]);
+                                                                    self._applicationDbContext.save();
+                                                                    saved = true;
+
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    //als de activiteit acceptorID is aangepast en ze staat terug in de browse:
+                                                    //verwijder ze uit zijn opgeslagen activiteiten en delete het element
+                                                    if(saved==true){
+                                                        self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten.splice(y,1);
+                                                        self._applicationDbContext.save();
+                                                        this.parentElement.remove();
+                                                    }
+                                                    
+                                                    //
+
+
+                                                    console.log(self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten[y]);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    //zet de activiteit terug op de browse pagina
+
+                                }
+                                //zo niet-> iemand anders heeft mijn activiteit geaccepteerd;
+                                //-> ik delete mijn activiteit
+                                else{
+                                    console.log("geaccepteerdDoorIemandAnders");
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        },
 
         
         
