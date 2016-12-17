@@ -634,19 +634,28 @@ ready(function(){
                             if(activiteit.gebruikerId == this._applicationDbContext._dbData.activeuser.id){
                                 //als het acceptorId = "CANCELLED" -> li gele actergrond kleur
                                 if(activiteit.acceptorId == "CANCELED"){
-                                    html += '<li class="activity"  id="'+activiteit.id+'" style="background-color: rgba(255,157,0,1); color: white;">';
-                                    html += '<button class="btn_X" id="'+activiteit.gebruikerId+'" syle="background-color: #f7e13d;"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: white;"></i></button>';    
-                                }else{
+                                    html += '<li class="activity"  id="'+activiteit.id+'" style="background-color: rgba(255,157,0,0.05); color: rgba(255,157,0,1);">';
+                                    html += '<button class="btn_X" id="'+activiteit.gebruikerId+'" syle="background-color: #f7e13d;"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: rgba(255,157,0,1);"></i></button>';    
+                                }
+
+                                else{
                                     html += '<li class="activity"  id="'+activiteit.id+'" style="background-color: #345F89; color: white;">';
                                     html += '<button class="btn_X" id="'+activiteit.gebruikerId+'" syle="background-color: #345F89;"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: white;"></i></button>';    
                                 }
                                 
                             }
                             
-                            
+                                    
                             else{
-                                html += '<li class="activity"  id="'+activiteit.id+'">';
-                                html += '<button class="btn_X" id="'+activiteit.gebruikerId+'"><i class="fa fa-times fa-lg" aria-hidden="true" ></i></button>';    
+                                if(activiteit.DeletedAt == "DELETED"){
+                                    html += '<li class="activity"  id="'+activiteit.id+'" style="background-color: rgba(255,0,0,0.05); color: red">';
+                                    html += '<button class="btn_X" id="'+activiteit.gebruikerId+'"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: red"></i></button>';    
+
+                                }
+                                else{
+                                    html += '<li class="activity"  id="'+activiteit.id+'">';
+                                    html += '<button class="btn_X" id="'+activiteit.gebruikerId+'"><i class="fa fa-times fa-lg" aria-hidden="true" ></i></button>';    
+                                }
                             }
                             
                             html += '<ul class="info_dtl">';
@@ -675,6 +684,9 @@ ready(function(){
                             if(activiteit.acceptorId == "CANCELED"){
                                 html+= "<p id='warning'><strong>Info:De gebruiker heeft de acctiviteit geanulleerd, wij hebben uw activiteit weer zichtbaar gemaakt voor andere gebruikers.</strong></p>"
                             }
+                            if(activiteit.DeletedAt == "DELETED"){
+                                html+= "<p id='warning'><strong>Info:De gebruiker heeft de acctiviteit verwijderd, deze activiteit is niet meer beschikbaar.</strong></p>"
+                            }
                             html += '</li>';
                             browseList.innerHTML = html;
                             arraySavedActivities[j] = activiteit;
@@ -686,7 +698,6 @@ ready(function(){
 
         "deleteSavedActivities":function(arraySavedActivities){
             var self = this;
-            var saved =false;
             var btn_X = document.querySelectorAll(".btn_X");
             //doorloop alle delete buttons, voeg eventlistener click aan toe
             for(var i=0; i<btn_X.length;i++){
@@ -701,14 +712,14 @@ ready(function(){
                     //als er geen acceptor id aanwezig is mag deze post gedelete worden uit mijnopgeslagen activiteiten en browse
                     //als er een acceptor id aanwezig is -> check of het de active user is of iemand anders
                     //acceptor id == iemand anders => "CANCELED"
-                    //acceptor id == active user => "DELETED"
+                    //creatorId == active user => "DELETED"
                     //als acceptor id == "CANCELED" -> verander achtergrondkleur naar geel bij de creator's opgeslagen activiteiten + voet activiteit terug toe aan browse
-                    //als acceptor id == "DELETED" -> varander achtergrondkleur naar rood bij de acceptor's opgeslagen activiteiten
+                    //als creatorId == "DELETED" -> varander achtergrondkleur naar rood bij de acceptor's opgeslagen activiteiten
                     for(var j=0; j<arraySavedActivities.length;j++){
                         if(arraySavedActivities[j].id == activiteitId){
                             //vanaf hier weten we op welke activiteit er geklikt is.
                             //check of er een acceptor id is
-                            if(arraySavedActivities[j].acceptorId == "" || arraySavedActivities[j].acceptorId == null){
+                            if(arraySavedActivities[j].acceptorId == "" || arraySavedActivities[j].acceptorId == null || arraySavedActivities[j].acceptorId == "CANCELED"){
                                 //als er geen acceptorID is => delete uit mijnopgeslagen activiteit
                                 for(var x=0; x<self._applicationDbContext._dbData.profiles.length; x++){
                                     if(self._applicationDbContext._dbData.profiles[x].id == self._applicationDbContext._dbData.activeuser.id){
@@ -767,13 +778,13 @@ ready(function(){
                                                         }
                                                     }
 
-                                                    //als de activiteit acceptorID is aangepast en ze staat terug in de browse:
+                                                    
                                                     //verwijder ze uit zijn opgeslagen activiteiten en delete het element
-                                                    if(saved==true){
+                                                    
                                                         self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten.splice(y,1);
                                                         self._applicationDbContext.save();
                                                         this.parentElement.remove();
-                                                    }
+                                                    
                                                     
                                                     //
 
@@ -788,8 +799,57 @@ ready(function(){
                                 }
                                 //zo niet-> iemand anders heeft mijn activiteit geaccepteerd;
                                 //-> ik delete mijn activiteit
+                                //-> verander kleur naar rode achtergrond bij de persoon die de activiteit geaccepteerd heeft
+
                                 else{
                                     console.log("geaccepteerdDoorIemandAnders");
+                                    //doorloop alle profielen
+                                     for(var x=0; x<self._applicationDbContext._dbData.profiles.length;x++){
+                                        //mijn profiel gevonden
+                                        if(self._applicationDbContext._dbData.profiles[x].id == self._applicationDbContext._dbData.activeuser.id){
+                                            console.log("profiel gevonden");
+                                            //doorloop mijn opgeslagen activiteiten
+                                            for(var y=0; y<self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten.length;y++){
+                                                //mijn activiteit gevonden
+                                                if(self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten[y].id == activiteitId){
+                                                    //delete mijn activiteit
+
+
+                                                    //vind acceptorId
+                                                    //ga door de profielen en zoek naar de acceptor van de activiteit
+                                                    for(var a=0; a<self._applicationDbContext._dbData.profiles.length;a++){
+                                                        if(self._applicationDbContext._dbData.profiles[a].id == self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten[y].acceptorId){
+                                                            console.log(a);
+                                                            //profiel Creator gevonden -> ga door zijn opgeslagenActiviteiten
+                                                            console.log("acceptor gevonden");
+                                                            //zoeken tussen opgeslagenActiviteiten
+                                                            for(var b=0; b<self._applicationDbContext._dbData.profiles[a].opgeslagenActiviteiten.length;b++){
+                                                                //zoek waar opgeslagenActiviteiten.id = activiteitId
+                                                                if(self._applicationDbContext._dbData.profiles[a].opgeslagenActiviteiten[b].id == activiteitId){
+                                                                    //activiteit in de opgeslagenactiviteiten van de acceptor gevonden
+                                                                    //-> zet creatorId (gebruikerId) op DELETED
+                                                                    self._applicationDbContext._dbData.profiles[a].opgeslagenActiviteiten[b].DeletedAt = "DELETED";
+                                                                    self._applicationDbContext.save();
+                                                                    deleted = true;
+                                                                    
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    //de localstorage van de acceptor is aangepast ->
+                                                    //deleten van de activiteit in de localstorage van de creator
+                                                    
+                                                        self._applicationDbContext._dbData.profiles[x].opgeslagenActiviteiten.splice(y,1);
+                                                        self._applicationDbContext.save();
+                                                        this.parentElement.remove();
+
+                                                    
+
+                                                }
+                                            }
+                                        }
+                                    }                                                    
                                 }
                             }
                         }

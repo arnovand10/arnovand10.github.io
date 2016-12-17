@@ -1,9 +1,4 @@
 if(document.querySelector(".map")){
-  document.querySelector(".map").style.visibility = "hidden";
-  document.querySelector(".map").style.position = "absolute";
-  document.querySelector(".map").style.zIndex= "-50";
-  document.querySelector(".browseList").style.position= "absolute";
-  document.querySelector(".browseList").style.marginRight = "2%";
   function initMap() {
     var gent = {lat: 51.0543, lng: 3.7174};
     var korenmarkt = {lat: 51.0544, lng: 3.721944};
