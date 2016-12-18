@@ -28,12 +28,11 @@ $(".wabout").waypoint(function(){
 });
 
 
-$("main").waypoint(function(){
+$(document).ready(function(){
 	$(".bhome").animate({
 		opacity: 1
-	},1000)
+	},1000);
 });
-
 
 //Header
 updateHeaderTitle();

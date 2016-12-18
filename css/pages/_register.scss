@@ -1,15 +1,39 @@
 .bregister{
 	margin: 0;
-	top: 200vh;
-	attachment: fixed;
-	z-index: -10;
-	position: absolute;
-	background-image: url("img/What-to-put-in-a-dog-crate.jpg");
-	background-repeat: no-repeat;
-	background-position: 10% 80%;
+    top: 195vh;
+    height: 100vh;
+    width: 100vw;
+    attachment: fixed;
+    z-index: -10;
+    position: absolute;
+    background-size: 100%;
+    background-image: url(img/What-to-put-in-a-dog-crate.jpg);
+    background-image: url(img/dog-903990_1280.jpg);
+    background-repeat: no-repeat;
+    background-position: 26% 100%;
 }
 .register{
 	margin-top: 0;
 	margin-left: 10%;
 	width: 80%;
-}	
+	background-color: white;
+}
+.whiteregister{
+    position: absolute;
+    top: 200vh;
+    height: 103vh;
+    width: 100vw;
+    z-index: -2;
+    background-color: white;
+}
+
+@media screen and (min-width: 961px){
+        .bregister{
+            background-size: 100%;
+            width: 960px;
+            left:0;
+        }
+        .whiteregister{
+        height: 110vh;
+        }
+}

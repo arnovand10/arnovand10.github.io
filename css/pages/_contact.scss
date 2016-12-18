@@ -1,5 +1,16 @@
+.bcontact{
+	margin: 0;
+	z-index: -1;
+	position: absolute;
+	top: 330vh;
+	width: 100vw;
+	height: 80vh;
+	background-color: white;
+}
+
 .contact{
-	margin-top: 0;
+	margin-top: 30vh;
 	margin-left: 12.5%;
 	width: 75%;
+	background-color: white;
 }

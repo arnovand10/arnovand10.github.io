@@ -4,3 +4,10 @@ $(window).scroll(function(){
 		"transform":'translate(0px,'+ scroll/15+ '%)'
 	});
 });
+
+$(window).scroll(function(){
+	var scroll = $(this).scrollTop();
+	$(".bregister").css({
+		"transform":'translate(0px,'+ (scroll/40)+ '%)'
+	});
+});
