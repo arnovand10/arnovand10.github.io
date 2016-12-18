@@ -37,4 +37,15 @@
 	}
 }
 
+@media screen and (min-width: 701px){
+	.home{
+		div{
+			width: 60%;
+			display: block;
+			margin: 0 auto;
 
+			margin-top: 20vh;
+			margin-bottom: 20vh;
+		}
+	}
+}

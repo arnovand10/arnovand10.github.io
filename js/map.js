@@ -54,6 +54,7 @@ var GMap = {
         this._geoLocationMarker = new google.maps.Marker({
             position: new google.maps.LatLng(geoLocation[0], geoLocation[1]),
             title:"My location",
+            clickable: true,
         });// Create a Google Maps Marker
 
         this._geoLocationMarker.setMap(this._map);// Add Marker to Map

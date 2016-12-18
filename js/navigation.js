@@ -1,6 +1,18 @@
 (function(){
-
+	var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+	window.addEventListener("resize",function(){
+		w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+		console.log(w);
+	if(w>'850'){
+		console.log("true");
+		$('.navigatie').css('left',0);
+	}else{
+		console.log("false");
+		$('.navigatie').css('left',100+'vw');
+	}
+});
 	$(".hamburger").click(function(){
+		usedHamburger = true;
 		if($("#main").position().left == "0"){
 			//navigatie openen;
 			$(".navigatie").animate({
@@ -25,19 +37,21 @@
 			$(".hamburger").children().addClass("fa-bars");
 			console.log("closed");
 		}
+		$(".navigatie").children().click(function(){
+		if(w<'850'){
+			$(".navigatie").animate({
+				left: "100vw"
+			},0);
+			$("#main").animate({
+				left: "0"
+			},0);
+			$(".hamburger").children().removeClass("fa-times");
+			$(".hamburger").children().addClass("fa-bars");
+			console.log("child click");
+		}
+		});
 	});
-
-	$(".navigatie").children().click(function(){
-		$(".navigatie").animate({
-			left: "100vw"
-		},0);
-		$("#main").animate({
-			left: "0"
-		},0);
-		$(".hamburger").children().removeClass("fa-times");
-		$(".hamburger").children().addClass("fa-bars");
-		console.log("child click");
-	});
+	
 
 	$(".toggleMap").click(function(){
 		if(this.innerHTML == "Map"){

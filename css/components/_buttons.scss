@@ -41,5 +41,28 @@
 }
 
 .btnprofiel{
-	height: 7vh;
+	padding: 6px 12px;
+}
+
+@media screen and (min-width: 700px){
+	.btn{
+		width: 50%;
+		margin: 10px auto;
+	}
+
+	.btn:hover{
+		color: $blauw;
+		background-color: $geel;
+		border: 2px solid $blauw;
+	}
+	#regreg{
+		margin-top: 25px;
+	}
+	#btnreg:hover{
+		background-color: $geel;
+		a{
+			background-color: $geel;	
+		}
+		
+	}
 }

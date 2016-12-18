@@ -15,19 +15,6 @@ $(".wregister").waypoint(function(){
 	$(".bregister").animate({
 		opacity: "1"
 	},2000);
-	console.log("register");
-
-	if($(".about").css("opacity")=="1"){
-		$(".about").animate({
-		marginLeft:"0",
-		opacity: "0"
-	},500);
-	}else{
-		$('.about').animate({
-		marginLeft:"12.5%",
-		opacity: "1"
-	},500);
-	}
 	
 },"100vh");
 

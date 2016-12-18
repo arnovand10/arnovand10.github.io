@@ -98,6 +98,7 @@ ready(function(){
                 this._activiteiten = this.getActivities();
                 this.filterActivities(this._activiteiten);
                 if(this._activiteiten != null){
+                    this.markerClick(this._activiteiten);
                     this.addOrDeleteActivities();
                 }
             }
@@ -439,7 +440,7 @@ ready(function(){
         "getActivities":function(){
             
             //alle activiteiten ophalen;
-            
+
             GMap.init();
             $(".map").css('visibility','hidden');
             $(".map").css('z-index',"-50");
@@ -488,18 +489,25 @@ ready(function(){
         },
 
         "filterActivities":function(activiteiten){
-            
+            var latLng = [];
+             
             var activiteit = activiteiten;
             var self = this;
             //wanneer de waarde van de filter is aangepast
             var browseList = document.querySelector(".browseList");
             var filterValue = document.querySelector('[name="activiteit"]');
             filterValue.addEventListener("change",function(ev){
+
+                GMap.init();
                 console.log("change");
                 //doorloop alle activiteiten
                 //toon enkel digene waar de activiteit.status == filter.value
                 for(var i=0; i<activiteit.length;i++){
                     if(activiteit[i].status == filterValue.value || filterValue.value == ""){
+                        //marker GeoLocation maken
+                        latLng[i] = [activiteit[i].lat,activiteit[i].lng];
+                        console.log(latLng[i])  ;
+                        GMap.addMarkerGeoLocation(latLng[i]);
                         var html;
                             if(activiteit[i].gebruikerId == self._applicationDbContext._dbData.activeuser.id){
                                 html += '<li class="activity"  id="'+activiteit[i].id+'" style="background-color: #345f89; color:white;">';
@@ -523,6 +531,12 @@ ready(function(){
                     }
                 }
             });
+        },
+
+        "markerClick":function(activiteiten){
+            var activiteit = activiteiten;
+            var markers = GMap._geoLocationMarker;
+            console.log(markers[0]);
         },
 
         "addOrDeleteActivities":function(){

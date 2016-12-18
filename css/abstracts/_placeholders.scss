@@ -20,3 +20,10 @@
 	width: 98%;
 	text-align: center;
 }
+
+@media screen and (min-width:700px){
+	.map{
+		width: 96%;
+		height: 70%;
+	}
+}

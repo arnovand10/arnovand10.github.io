@@ -130,3 +130,10 @@
 		}
 	}
 }
+
+@media screen and (min-width: 700px){
+	.profilePictureBig{
+		border: 5px solid blue;
+        height: 50vh;
+    }
+}
