@@ -385,9 +385,23 @@ ready(function(){
         },
 
         "actionEventListener":function(){
+            
+            //GOOGLE API PLACES
+            var latLng;
+            var searchBox = new google.maps.places.SearchBox(document.querySelector('[name="locatie"]'));
+
+            google.maps.event.addListener(searchBox, 'places_changed',function(){
+                var places = searchBox.getPlaces();
+                var i, place;
+                for(i=0; place = places[i];i++){
+                    latLng = [place.geometry.location.lat(),place.geometry.location.lng()];
+                    console.log(latLng);
+                    }
+                });
+            //EINDE GOOGLE API PLACES
             this._actionButton = document.querySelector("#activiteittoevoegen");
             document.querySelector('[name="hond"]').value = this._applicationDbContext._dbData.profiles[this._activeUser].hondnaam;
-
+         
             var self = this;
             this._actionButton.addEventListener("click",function(ev){
                 ev.preventDefault();
@@ -402,8 +416,11 @@ ready(function(){
                 var actionStopDatum = document.querySelector('[name="stopdatum"]').value;
                 var actionStopUur = document.querySelector('[name="stopuur"]').value;
                 var actionHerhaling = document.querySelector('[name="herhaling"]').value;
+                
+                var lat = latLng[0];
+                var lng = latLng[1];
                 if(actionHond != null && actionHond !=""){
-                    var result = self._applicationDbContext.addActivity(actionGebruikerId,actionId,actionActiviteit,actionHond,actionStraat,actionNummer,actionStartDatum,actionStartUur,actionStopDatum,actionStopUur,actionHerhaling);
+                    var result = self._applicationDbContext.addActivity(actionGebruikerId,actionId,actionActiviteit,actionHond,actionStraat,actionNummer,actionStartDatum,actionStartUur,actionStopDatum,actionStopUur,actionHerhaling,lat,lng);
                     if(result != null){
                         console.log("toegevoegd");
                         window.location = "/_pages/browse.html";
@@ -422,9 +439,21 @@ ready(function(){
         "getActivities":function(){
             
             //alle activiteiten ophalen;
+            
+            GMap.init();
+            $(".map").css('visibility','hidden');
+            $(".map").css('z-index',"-50");
             var browseList = document.querySelector(".browseList");
             var activiteit = this._applicationDbContext._dbData.activiteiten;
+            var latLng = [];
+            console.log(activiteit);
             for(var i=0; i<activiteit.length;i++){
+                        //marker GeoLocation maken
+                        latLng[i] = [activiteit[i].lat,activiteit[i].lng];
+                        console.log(latLng[i])  ;
+                        GMap.addMarkerGeoLocation(latLng[i]);
+                        
+
                         var html;
                             //als activegebruikerId = gebruikerID van de actie (degine die het gepost heeft)
                             //veranderd de style
@@ -453,6 +482,8 @@ ready(function(){
                             html += '</li>';
                             browseList.innerHTML = html;
                 }
+
+            console.log(GMap._geoLocationMarker);
             return activiteit;
         },
 

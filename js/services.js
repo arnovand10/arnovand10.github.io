@@ -63,6 +63,8 @@ var applicationDbContext = {
                     "id":3,
                     "status":"oppassen",
                     "locatie":"Korenmarkt",
+                    "lat":"51.054300",
+                    "lng":"3.721736",
 
                     "gebruikerId":3,
                     "gebruikerNaam":"BartSmith",
@@ -86,6 +88,8 @@ var applicationDbContext = {
                     "id":1,
                     "status":"uitlaten",
                     "locatie":"Gravesteen",
+                    "lat": "51.057529",
+                    "lng":"3.720737",
 
                     "gebruikerId":1,
                     "gebruikerNaam":"Jandeman",
@@ -109,6 +113,8 @@ var applicationDbContext = {
                     "id":2,
                     "status":"ontmoeten",
                     "locatie":"Gravesteen",
+                    "lat": "51.057529",
+                    "lng":"3.720737",
 
                     "gebruikerId":2,
                     "gebruikerNaam":"Jolien23",
@@ -276,16 +282,12 @@ var applicationDbContext = {
         this.save();
     },
 
-    "addActivity":function(userId,actieId,actie,hondnaam,locatie,nr,startD,startU,stopD,stopU,repeat){
+    "addActivity":function(userId,actieId,actie,hondnaam,locatie,nr,startD,startU,stopD,stopU,repeat,_lat,_lng){
         if(userId != null &&  userId!="" && actieId != null && actieId != ""){
-            console.log("ok userId, actieId");
             if(actie !=null  && actie != "" && hondnaam != null && hondnaam != ""){
-                console.log("ok actie, hondnaam");
                 if(locatie!=null  && locatie!="" && startD!=null && startD!=""){
-                    console.log("ok locatie, startDatum");
                     if(startU !=null  && startU !="" && stopD !=null && stopD !=""){
-                        console.log("ok startUur stop Uur");
-                        if(stopU!=null  && stopU!=""){
+                        if(stopU!=null  && stopU!="" && _lat!=null && _lat!="" && _lng!=null && _lng!=""){
                             //alles is ok => toevoegen in localstorage activiteiten.
                             var activiteit = new Activiteit();
                             activiteit.id = actieId;
@@ -307,6 +309,8 @@ var applicationDbContext = {
                             activiteit.stopDatum = stopD;
                             activiteit.stopUur = stopU;
                             activiteit.acceptorId = "";
+                            activiteit.lat = _lat;
+                            activiteit.lng = _lng;
                             if(repeat!=null && repeat !=""){
                                 activiteit.herhaling = repeat;    
                             }else{

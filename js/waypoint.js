@@ -93,8 +93,8 @@ function updateHeaderTitle(){
 	else if(url=="_pages/activities.html"){
 		titleValue.text("Opgeslagen activiteiten");
 	}
-	else if(url=="_pages/profiles.html"){
-		titleValue.text("Opgeslagen profielen");
+	else if(url=="_pages/hondenvoorzieningen.html"){
+		titleValue.text("Hondenvoorzieningen");
 	}
 	else if(url=="_pages/editmyprofile.html"){
 		titleValue.text("Profiel aanpassen");
