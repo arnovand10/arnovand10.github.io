@@ -55,6 +55,10 @@ var GMap = {
             position: new google.maps.LatLng(geoLocation[0], geoLocation[1]),
             title:"My location",
             clickable: true,
+            icon: {
+                url:"../css/img/WafMarkerV2.png",
+                scaledSize : new google.maps.Size(35, 50),
+            },
         });// Create a Google Maps Marker
 
         this._geoLocationMarker.setMap(this._map);// Add Marker to Map

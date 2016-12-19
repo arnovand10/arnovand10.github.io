@@ -82,8 +82,10 @@ ready(function(){
             //editmyprofile.html
             this._myProfilePageEdit = document.querySelector('.myprofilePageEdit');
             if(this._myProfilePageEdit != null){
+                this._dogRaceDbUrl =  "https://raw.githubusercontent.com/dariusk/corpora/master/data/animals/dogs.json";
+                this._dogRaceArray = this.getDogRace(this._dogRaceDbUrl);
                 this._btnEdit = document.querySelector('.btnEditMyProfile');
-                this.myProfilePageEdit();
+                this.myProfilePageEdit(this._dogRaceArray);
             }
 
             //action.html
@@ -217,16 +219,33 @@ ready(function(){
             });
         },
 
-        "myProfilePageEdit":function(){
-            //textvelden upvullen met de profiel waardes uit de localstorage
+        "getDogRace":function(dogRaceUrl){
+            var races = $.ajax({type: "GET", url: dogRaceUrl, async: false}).responseText;
+            var response = JSON.parse(races);
+            console.log(response.dogs);
+            return response.dogs;
+        },
 
+        "myProfilePageEdit":function(arrayDogRaces){
+
+
+            //textvelden upvullen met de profiel waardes uit de localstorage
             console.log(this._applicationDbContext._dbData.profiles[this._activeUser]);
             document.querySelector('[name="foto"]').value =  this._applicationDbContext._dbData.profiles[this._activeUser].profielfoto;
             document.querySelector('[name="status"]').value =  this._applicationDbContext._dbData.profiles[this._activeUser].status;
             document.querySelector('[name="locatie"]').value =  this._applicationDbContext._dbData.profiles[this._activeUser].locatie;
             document.querySelector('[name="hond"]').value =  this._applicationDbContext._dbData.profiles[this._activeUser].hondnaam;
-            document.querySelector('[name="ras"]').value =  this._applicationDbContext._dbData.profiles[this._activeUser].hondras;
+            document.querySelector("#ras").innerHTML =  this._applicationDbContext._dbData.profiles[this._activeUser].hondras;
+            document.querySelector("#ras").value =  this._applicationDbContext._dbData.profiles[this._activeUser].hondras;
             document.querySelector('[name="email"').value = this._applicationDbContext._dbData.profiles[this._activeUser].email;
+            
+            //select vullen met hondenrassen
+            for(var i =0; i<arrayDogRaces.length;i++){
+                document.querySelector('[name="ras"').innerHTML += '<option value="'+arrayDogRaces[i]+'">'+arrayDogRaces[i]+'</option>';
+            }
+
+
+
             //wanneer er op de knop gedrukt wordt, textveld values opvragen en opslaan in database
             var self = this;
             this._btnEdit.addEventListener("click",function(ev){
@@ -449,6 +468,69 @@ ready(function(){
             var latLng = [];
             console.log(activiteit);
             for(var i=0; i<activiteit.length;i++){
+                    //check of er verlopen activiteiten zijn
+                     var today = new Date();
+                            var dag = today.getDate();
+                            var maand = today.getMonth()+1;
+                            var jaar = today.getFullYear();
+                            var uur = today.getHours();
+                            var minuten = today.getMinutes();
+                            var activiteitVerlopen =false;
+
+                            var activiteitStopDag = activiteit[i].stopDatum.split("-")[2];
+                            var activiteitStopMaand = activiteit[i].stopDatum.split("-")[1];
+                            var activiteitStopJaar = activiteit[i].stopDatum.split("-")[0];
+
+                            var activiteitStopUur = activiteit[i].stopUur.split(":")[0];
+                            var activiteitStopMinuten = activiteit[i].stopUur.split(":")[1];
+                            //if(activiteit.gebruikerId == this._applicationDbContext._dbData.activeuser.id){
+                                //checken of het expired is
+                                var activiteitVerlopen = false;
+                                if(activiteitStopJaar < jaar){
+                                    activiteitVerlopen = true;
+                                }
+                                
+                                else if(activiteitStopJaar==jaar){
+                                    console.log('!jaar');
+
+                                    if(activiteitStopMaand < maand){
+                                        activiteitVerlopen = true;  
+                                    }
+                                    
+                                    else if(activiteitStopMaand == maand){
+                                        console.log('!maand');
+                                        if(activiteitStopDag < dag){
+                                            activiteitVerlopen = true;
+                                        }
+                                        
+                                        else if(activiteitStopDag == dag){
+                                            console.log('!dag');
+                                            if(activiteitStopUur < uur){
+                                                activiteitVerlopen = true;
+                                            }
+                                            
+                                            else if(activiteitStopUur == uur){
+                                                console.log('!uur')
+                                                if(activiteitStopMinuten <= minuten){
+                                                    activiteitVerlopen = true;
+                                                }
+                                                
+                                                else{
+                                                    console.log("!minuut");
+                                                    activiteitVerlopen = false;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
+                                }
+                                console.log(activiteitVerlopen);
+                                if(activiteitVerlopen == true){
+                                    console.log(activiteit[i]);
+                                    //verwijder uit browse
+                                    this._applicationDbContext._dbData.activiteiten.splice(i,1);
+                                    this._applicationDbContext.save();
+                                }
                         //marker GeoLocation maken
                         latLng[i] = [activiteit[i].lat,activiteit[i].lng];
                         console.log(latLng[i])  ;
@@ -678,35 +760,105 @@ ready(function(){
                     for(var j=0; j<profielen[i].opgeslagenActiviteiten.length;j++){
                        var activiteit = profielen[i].opgeslagenActiviteiten[j];
                        var html;
+                       var today = new Date();
+                       var dag = today.getDate();
+                       var maand = today.getMonth()+1;
+                       var jaar = today.getFullYear();
+                       var uur = today.getHours();
+                       var minuten = today.getMinutes();
+
+                       var activiteitStopDag = activiteit.stopDatum.split("-")[2];
+                       var activiteitStopMaand = activiteit.stopDatum.split("-")[1];
+                       var activiteitStopJaar = activiteit.stopDatum.split("-")[0];
+                       var activiteitStopUur = activiteit.stopUur.split(":")[0];
+                       var activiteitStopMinuten = activiteit.stopUur.split(":")[1];
+                       //checken of het expired is
+                                console.log("test");
+                                var activiteitVerlopen = false;
+                                if(activiteitStopJaar < jaar){
+                                    activiteitVerlopen = true;
+                                }
+                                
+                                else if(activiteitStopJaar==jaar){
+                                    console.log('!jaar');
+
+                                    if(activiteitStopMaand < maand){
+                                        activiteitVerlopen = true;  
+                                    }
+                                    
+                                    else if(activiteitStopMaand == maand){
+                                        console.log('!maand');
+                                        if(activiteitStopDag < dag){
+                                            activiteitVerlopen = true;
+                                        }
+                                        
+                                        else if(activiteitStopDag == dag){
+                                            console.log('!dag');
+                                            if(activiteitStopUur < uur){
+                                                activiteitVerlopen = true;
+                                            }
+                                            
+                                            else if(activiteitStopUur == uur){
+                                                console.log('!uur')
+                                                console.log(activiteitStopMinuten);
+                                                if(activiteitStopMinuten <= minuten){
+                                                    activiteitVerlopen = true;
+                                                }
+                                                else{
+                                                    console.log("!minuut");
+                                                    activiteitVerlopen = false;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
+                                }
+                                console.log(activiteitVerlopen);
+                                if(activiteitVerlopen == true){
+                                    html += '<li class="activity"  id="'+activiteit.id+'" style="background-color: rgba(219, 200, 170,0.05); color: rgb(219, 200, 170)">';
+                                    html += '<button class="btn_X" id="'+activiteit.gebruikerId+'"><i class="fa fa-check fa-lg" aria-hidden="true" style="color: rgb(219, 200, 170)"></i></button>';
+                                }
+
                         //als activegebruikerId = gebruikerID van de actie (degine die het gepost heeft)
                             //veranderd de style
                             //er wordt een id waarde toegekent aan de button en activiteit -> bij het klikken kan 
                             //dan makkelijk gezien worden bij welke activiteit welke button hoord. 
                             //zie addOrDeleteActivity();
                             if(activiteit.gebruikerId == this._applicationDbContext._dbData.activeuser.id){
-                                //als het acceptorId = "CANCELLED" -> li gele actergrond kleur
-                                if(activiteit.acceptorId == "CANCELED"){
-                                    html += '<li class="activity"  id="'+activiteit.id+'" style="background-color: rgba(255,157,0,0.05); color: rgba(255,157,0,1);">';
-                                    html += '<button class="btn_X" id="'+activiteit.gebruikerId+'" syle="background-color: #f7e13d;"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: rgba(255,157,0,1);"></i></button>';    
+
+                                if(activiteit.acceptorId != "CANCELED" && activiteit.acceptorId != null && activiteit.acceptorId!="" && activiteitVerlopen ==false){
+                                    html += '<li class="activity"  id="'+activiteit.id+'" style="background-color: rgba(255,255,0,0.05); color: green;">';
+                                    html += '<button class="btn_X" id="'+activiteit.gebruikerId+'" syle="background-color: rgba(255,255,0,0.5);"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: green;"></i></button>';    
                                 }
 
-                                else{
+
+                                //als het acceptorId = "CANCELLED" -> li gele actergrond kleur
+                                else if(activiteit.acceptorId == "CANCELED" && activiteitVerlopen==false){
+                                    html += '<li class="activity"  id="'+activiteit.id+'" style="background-color: rgba(255,157,0,0.05); color: rgba(255,157,0,1);">';
+                                    html += '<button class="btn_X" id="'+activiteit.gebruikerId+'" syle="background-color: #f7e13d;"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: rgba(255,157,0,1);"></i></button>';    
+                                    
+                                }
+
+                                else if(activiteitVerlopen == false){
                                     html += '<li class="activity"  id="'+activiteit.id+'" style="background-color: #345F89; color: white;">';
                                     html += '<button class="btn_X" id="'+activiteit.gebruikerId+'" syle="background-color: #345F89;"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: white;"></i></button>';    
+
                                 }
                                 
                             }
                             
                                     
                             else{
-                                if(activiteit.DeletedAt == "DELETED"){
+                                
+                                    
+                                if(activiteit.DeletedAt == "DELETED" && activiteitVerlopen == false){
                                     html += '<li class="activity"  id="'+activiteit.id+'" style="background-color: rgba(255,0,0,0.05); color: red">';
                                     html += '<button class="btn_X" id="'+activiteit.gebruikerId+'"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: red"></i></button>';    
 
                                 }
-                                else{
+                                else if(activiteitVerlopen != true){
                                     html += '<li class="activity"  id="'+activiteit.id+'">';
-                                    html += '<button class="btn_X" id="'+activiteit.gebruikerId+'"><i class="fa fa-times fa-lg" aria-hidden="true" ></i></button>';    
+                                    html += '<button class="btn_X" id="'+activiteit.gebruikerId+'"><i class="fa fa-times fa-lg" aria-hidden="true" ></i></button>';
                                 }
                             }
                             
@@ -727,7 +879,7 @@ ready(function(){
                             
                                 for(var k=0; k<this._applicationDbContext._dbData.profiles.length;k++){
                                     if(this._applicationDbContext._dbData.profiles[k].id==activiteit.acceptorId){
-                                        html+= '<li>Geaccepteerd door :'+this._applicationDbContext._dbData.profiles[k].gebruikersnaam+'</li>';
+                                        html+= '<li>Geaccepteerd door: '+this._applicationDbContext._dbData.profiles[k].gebruikersnaam+'</li>';
                                     }
 
                                 }
@@ -738,6 +890,9 @@ ready(function(){
                             }
                             if(activiteit.DeletedAt == "DELETED"){
                                 html+= "<p id='warning'><strong>Info:De gebruiker heeft de acctiviteit verwijderd, deze activiteit is niet meer beschikbaar.</strong></p>"
+                            }
+                            if(activiteitVerlopen == true){
+                                html+="<p id='warning' style='color: rgb(219, 200, 170);'><strong>Info: De activiteit is verlopen</strong></p>"
                             }
                             html += '</li>';
                             browseList.innerHTML = html;
@@ -758,7 +913,6 @@ ready(function(){
                     var activiteitCreatorId = this["id"];
                     //this.parentElement["id"] = de id van de post;
                     var activiteitId = this.parentElement["id"];
-                    console.log(activiteitId);
                     //doorloop alle opgeslagen activiteiten in de local storage
                     //als opgeslagenactiviteit.id == activiteitId
                     //als er geen acceptor id aanwezig is mag deze post gedelete worden uit mijnopgeslagen activiteiten en browse
@@ -770,8 +924,67 @@ ready(function(){
                     for(var j=0; j<arraySavedActivities.length;j++){
                         if(arraySavedActivities[j].id == activiteitId){
                             //vanaf hier weten we op welke activiteit er geklikt is.
-                            //check of er een acceptor id is
-                            if(arraySavedActivities[j].acceptorId == "" || arraySavedActivities[j].acceptorId == null || arraySavedActivities[j].acceptorId == "CANCELED"){
+                            //check of de post verlopen is
+                            var today = new Date();
+                            var dag = today.getDate();
+                            var maand = today.getMonth()+1;
+                            var jaar = today.getFullYear();
+                            var uur = today.getHours();
+                            var minuten = today.getMinutes();
+                            var activiteitVerlopen =false;
+
+                            var activiteitStopDag = arraySavedActivities[j].stopDatum.split("-")[2];
+                            var activiteitStopMaand = arraySavedActivities[j].stopDatum.split("-")[1];
+                            var activiteitStopJaar = arraySavedActivities[j].stopDatum.split("-")[0];
+
+                            var activiteitStopUur = arraySavedActivities[j].stopUur.split(":")[0];
+                            var activiteitStopMinuten = arraySavedActivities[j].stopUur.split(":")[1];
+                            //if(activiteit.gebruikerId == this._applicationDbContext._dbData.activeuser.id){
+                                //checken of het expired is
+                                var activiteitVerlopen = false;
+                                if(activiteitStopJaar < jaar){
+                                    activiteitVerlopen = true;
+                                }
+                                
+                                else if(activiteitStopJaar==jaar){
+                                    console.log('!jaar');
+
+                                    if(activiteitStopMaand < maand){
+                                        activiteitVerlopen = true;  
+                                    }
+                                    
+                                    else if(activiteitStopMaand == maand){
+                                        console.log('!maand');
+                                        if(activiteitStopDag < dag){
+                                            activiteitVerlopen = true;
+                                        }
+                                        
+                                        else if(activiteitStopDag == dag){
+                                            console.log('!dag');
+                                            if(activiteitStopUur < uur){
+                                                activiteitVerlopen = true;
+                                            }
+                                            
+                                            else if(activiteitStopUur == uur){
+                                                console.log('!uur')
+                                                if(activiteitStopMinuten <= minuten){
+                                                    activiteitVerlopen = true;
+                                                }
+                                                
+                                                else{
+                                                    console.log("!minuut");
+                                                    activiteitVerlopen = false;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
+                                }
+                                console.log(activiteitVerlopen);
+
+
+                            //check of er een acceptor id is of het is verlopen.
+                            if(arraySavedActivities[j].acceptorId == "" || arraySavedActivities[j].acceptorId == null || arraySavedActivities[j].acceptorId == "CANCELED" || activiteitVerlopen ==true){
                                 //als er geen acceptorID is => delete uit mijnopgeslagen activiteit
                                 for(var x=0; x<self._applicationDbContext._dbData.profiles.length; x++){
                                     if(self._applicationDbContext._dbData.profiles[x].id == self._applicationDbContext._dbData.activeuser.id){
@@ -781,6 +994,7 @@ ready(function(){
                                                 console.log("deleted uit opgeslagenActiviteiten");
                                                 self._applicationDbContext.save();
                                                 this.parentElement.remove();
+                                                console.log(activiteitStopDag);
                                             }
                                         }
                                     }
@@ -795,7 +1009,7 @@ ready(function(){
                                 }
                             }
                             //als er een acceptorId aanwezig is
-                            else if(arraySavedActivities[j].acceptorId != "" || arraySavedActivities[j].acceptorId != null){
+                            else if((arraySavedActivities[j].acceptorId != "" || arraySavedActivities[j].acceptorId != null)&&activiteitVerlopen==false){
                                 //check of de acceptorId == activeuserId
                                 //M.A.W. check of ik de activiteit heb geaccepteerd
                                 //-> ik annuleer de activiteit
@@ -896,8 +1110,6 @@ ready(function(){
                                                         self._applicationDbContext.save();
                                                         this.parentElement.remove();
 
-                                                    
-
                                                 }
                                             }
                                         }
@@ -906,9 +1118,13 @@ ready(function(){
                             }
                         }
                     }
-                });
-            }
-        },
+                    
+                
+                self.deleteSavedActivities(self._savedActivities);
+            });
+
+        }
+    },
 
 
         
