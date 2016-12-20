@@ -2,12 +2,9 @@
 	var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 	window.addEventListener("resize",function(){
 		w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-		console.log(w);
 	if(w>'850'){
-		console.log("true");
 		$('.navigatie').css('left',0);
 	}else{
-		console.log("false");
 		$('.navigatie').css('left',100+'vw');
 	}
 });
@@ -66,7 +63,7 @@
 			$(".map").css('z-index',"-50");
 			$(".browseList").css('visibility','visible');
 			$(".browseList").css('z-index','0');
+			$(".activity").css('')
 		}
-		
 	});
 })();

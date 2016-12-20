@@ -100,7 +100,6 @@ ready(function(){
                 this._activiteiten = this.getActivities();
                 this.filterActivities(this._activiteiten);
                 if(this._activiteiten != null){
-                    this.markerClick(this._activiteiten);
                     this.addOrDeleteActivities();
                 }
             }
@@ -534,10 +533,10 @@ ready(function(){
                         //marker GeoLocation maken
                         latLng[i] = [activiteit[i].lat,activiteit[i].lng];
                         console.log(latLng[i])  ;
-                        GMap.addMarkerGeoLocation(latLng[i]);
+                        var browseLocaties = GMap.addMarkerGeoLocation(latLng[i]);
                         
 
-                        var html;
+                        var html="";
                             //als activegebruikerId = gebruikerID van de actie (degine die het gepost heeft)
                             //veranderd de style
                             //er wordt een id waarde toegekent aan de button en activiteit -> bij het klikken kan 
@@ -565,7 +564,7 @@ ready(function(){
                             html += '</li>';
                             browseList.innerHTML = html;
                 }
-
+            GMap.markerClick(browseLocaties);
             console.log(GMap._geoLocationMarker);
             return activiteit;
         },
@@ -590,7 +589,7 @@ ready(function(){
                         latLng[i] = [activiteit[i].lat,activiteit[i].lng];
                         console.log(latLng[i])  ;
                         GMap.addMarkerGeoLocation(latLng[i]);
-                        var html;
+                        var html="";
                             if(activiteit[i].gebruikerId == self._applicationDbContext._dbData.activeuser.id){
                                 html += '<li class="activity"  id="'+activiteit[i].id+'" style="background-color: #345f89; color:white;">';
                                 html += '<button class="btn_X" id="'+activiteit[i].gebruikerId+'"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: white"; ></i></button>';    
@@ -615,11 +614,6 @@ ready(function(){
             });
         },
 
-        "markerClick":function(activiteiten){
-            var activiteit = activiteiten;
-            var markers = GMap._geoLocationMarker;
-            console.log(markers[0]);
-        },
 
         "addOrDeleteActivities":function(){
             var saved = false;
@@ -759,7 +753,7 @@ ready(function(){
                     //profiel gevonden -> alle opgeslagen activiteiten doorlopen
                     for(var j=0; j<profielen[i].opgeslagenActiviteiten.length;j++){
                        var activiteit = profielen[i].opgeslagenActiviteiten[j];
-                       var html;
+                       var html = "";
                        var today = new Date();
                        var dag = today.getDate();
                        var maand = today.getMonth()+1;

@@ -19,6 +19,10 @@
         + '&libraries=places'
         + '&callback=initGoogleMaps';
     document.body.appendChild(script);
+    if(document.querySelector(".browse")!=null){
+        document.querySelector(".placeholderMap").style.zIndex= "-50";
+    }
+    
 
     
 
@@ -42,18 +46,18 @@ var GMap = {
         
         //hondenvoorzieningen.html
 
+        this._geoLocationMarker = null;
+        this._markersTreesInventory = [];
+        this._markerClusterTreesInventory = null;
         if(document.querySelector('.hondenvoorzieningen')!=null){
           this._locations = this.getLocations();  
         }
         
-        this._geoLocationMarker = null;
-        this._markersTreesInventory = [];
-        this._markerClusterTreesInventory = null;
     },
     "addMarkerGeoLocation": function(geoLocation) {
         this._geoLocationMarker = new google.maps.Marker({
             position: new google.maps.LatLng(geoLocation[0], geoLocation[1]),
-            title:"My location",
+            title: geoLocation[0]+" "+geoLocation[1],
             clickable: true,
             icon: {
                 url:"../css/img/WafMarkerV2.png",
@@ -62,6 +66,8 @@ var GMap = {
         });// Create a Google Maps Marker
 
         this._geoLocationMarker.setMap(this._map);// Add Marker to Map
+        this._markersTreesInventory.push(this._geoLocationMarker);
+        return this._markersTreesInventory;
     },
     "hideMarkers": function(arrMarkers, hide){
         var self = this;
@@ -86,7 +92,52 @@ var GMap = {
           //lat en lng van plaats verwisselen omdat ze in de database omgekeerd staan
           // == FACEPALM
           var latLng = [response.coordinates[i][1],response.coordinates[i][0]]
-          this.addMarkerGeoLocation(latLng);
+          var arrMarkers = this.addMarkerGeoLocation(latLng);
+          
+        }
+        this.markerClick(arrMarkers);
+    },
+
+    "markerClick":function(arrMarkers){
+        var self = this;
+        for(var i=0; i<arrMarkers.length; i++){
+            google.maps.event.addListener(arrMarkers[i],"click",function(ev){
+        
+                if(document.querySelector(".browseList")){
+                    //als we op browse pagina zitten
+                    //haal de activiteit met dezelfde lat en lng op
+                    var dbActiviteiten = applicationDbContext._dbData.activiteiten;
+                    var html ="";
+                    for(var j=0; j<dbActiviteiten.length;j++){
+                        //haal de coordinaten uit de local storage
+                        var dbLat = dbActiviteiten[j].lat;
+                        var dbLng = dbActiviteiten[j].lng;
+                        //haal de coordiaten van de map uit de title
+                        var mapLat = this.title.split(" ")[0];
+                        var mapLng = this.title.split(" ")[1];
+                        //check do coordinaten van de activiteiten
+                        if(dbLat == mapLat && dbLng == mapLng){
+                            if(dbActiviteiten[j]!=undefined){
+                            //gevonden -> schrijf de locatie in de placeholderMap
+                            html += '<ul class="placeholderMapList">';
+                            html +='<li><strong>'+dbActiviteiten[j].status+'</strong></li>';
+                            html +='<li>Van: '+dbActiviteiten[j].startDatum+' '+dbActiviteiten[j].startUur +'</li>';
+                            html +='<li>Tot: '+dbActiviteiten[j].stopDatum+" "+dbActiviteiten[j].stopUur+'</li>';
+                            html +='<li>Door: '+dbActiviteiten[j].gebruikerNaam+'</li>';
+                            html +='<li>Hond: '+dbActiviteiten[j].gebruikerHond+" "+dbActiviteiten[j].gebruikerRas+'</li>';
+                            html +='<li>Locatie: '+dbActiviteiten[j].locatie+'</li>';
+                            html += "</ul>";
+                            console.log(dbActiviteiten[j]);
+                        }
+                        }
+                    }
+                    if(html!=null){
+                    document.querySelector(".placeholderMap").innerHTML = html;
+                    document.querySelector(".placeholderMap").style.zIndex = "3";
+                    document.querySelector(".placeholderMap").style.marginBottom = "100px";
+                    }
+                }
+            });
         }
     },
 };
