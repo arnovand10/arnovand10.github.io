@@ -98,7 +98,27 @@ ready(function(){
             this._browsePage = document.querySelector(".browse");
             if(this._browsePage != null){
                 this._activiteiten = this.getActivities();
-                this.filterActivities(this._activiteiten);
+                var self= this;
+                document.querySelector(".btnFilter").addEventListener("click",function(e){
+                    e.preventDefault();
+                    $(".filter").animate({
+                        left: "-70vw"
+                    },500); 
+                    self.filterActivities(self._activiteiten);    
+                });
+                document.querySelector(".btnReset").addEventListener("click",function(e){
+                    e.preventDefault();
+                    $(".filter").animate({
+                        left: "-70vw"
+                    },500);
+                    if($(".toggleMap").hasClass("fa-map")){
+                        console.log(true);
+                        $(".toggleMap").removeClass("fa-map").addClass("fa-list");
+                        $(".map").fadeIn().css('display','inline');
+                        $(".browseList").fadeOut().css('display','none');
+                    }
+                    self.activiteiten = self.getActivities();
+                });
                 if(this._activiteiten != null){
                     this.addOrDeleteActivities();
                 }
@@ -460,11 +480,10 @@ ready(function(){
             //alle activiteiten ophalen;
 
             GMap.init();
-            $(".map").css('visibility','hidden');
-            $(".map").css('z-index',"-50");
             var browseList = document.querySelector(".browseList");
             var activiteit = this._applicationDbContext._dbData.activiteiten;
             var latLng = [];
+            var html="";
             console.log(activiteit);
             for(var i=0; i<activiteit.length;i++){
                     //check of er verlopen activiteiten zijn
@@ -523,9 +542,7 @@ ready(function(){
                                     }
                                     
                                 }
-                                console.log(activiteitVerlopen);
                                 if(activiteitVerlopen == true){
-                                    console.log(activiteit[i]);
                                     //verwijder uit browse
                                     this._applicationDbContext._dbData.activiteiten.splice(i,1);
                                     this._applicationDbContext.save();
@@ -536,7 +553,6 @@ ready(function(){
                         var browseLocaties = GMap.addMarkerGeoLocation(latLng[i]);
                         
 
-                        var html="";
                             //als activegebruikerId = gebruikerID van de actie (degine die het gepost heeft)
                             //veranderd de style
                             //er wordt een id waarde toegekent aan de button en activiteit -> bij het klikken kan 
@@ -566,19 +582,117 @@ ready(function(){
                 }
             GMap.markerClick(browseLocaties);
             console.log(GMap._geoLocationMarker);
+            $(".browseList").css("display","none");
             return activiteit;
         },
 
         "filterActivities":function(activiteiten){
+            GMap.init();
             var latLng = [];
-             
-            var activiteit = activiteiten;
             var self = this;
-            //wanneer de waarde van de filter is aangepast
-            var browseList = document.querySelector(".browseList");
-            var filterValue = document.querySelector('[name="activiteit"]');
-            filterValue.addEventListener("change",function(ev){
+            //wanneer er op de knop 'zoeken' is gedrukt, haal alle values op van de input fileds
+            var browseList = document.querySelector(".browseList");       
+            var activiteitFilter = document.querySelector('[name="activiteit"]').value;
+            var locatieFilter = document.querySelector('[name="locatie"').value;
+            var startUurFilter = document.querySelector('[name="startUur"]').value;
+            var stopUurFilter = document.querySelector('[name="stopUur"]').value;
+            var startDatumFilter = document.querySelectorAll('[name="startDatum"]').value;
+            var stopDatumFilter = document.querySelectorAll('[name="stopDatum"]').value;
+            var html = "";
+            browseList.innerHTML="";
 
+            var arrFilter = ["","","","","",""];
+            //check op wat gefilterd moet worden
+            if(activiteitFilter!=null&&activiteitFilter!=undefined){
+                arrFilter[0]=activiteitFilter;
+            }
+            for(var i=0; i<$('input').length;i++){
+                if($("input")[i]!=null&&$("input")[i]!=undefined&&$("input")[i]!=""){
+                    arrFilter[i+1]=$("input")[i].value;
+                }
+            }
+            //de filter array is gemaakt;
+            //doorloop alle waardes waar ze niet leeg zijn
+            for(var i=0; i<activiteiten.length;i++){
+                //**filter op activiteit**
+                if(arrFilter[0]!=""){
+                    if(arrFilter[0]==activiteiten[i].status){
+                        latLng[i]=[activiteiten[i].lat,activiteiten[i].lng];
+                        var browseLocaties = GMap.addMarkerGeoLocation(latLng[i]);
+                        GMap.markerClick(browseLocaties);
+                        filterList(activiteiten[i]);
+                    }
+                }
+                //***filter op locatie**
+                if(arrFilter[1]!=""){
+                    if(arrFilter[1]==activiteiten[i].locatie){
+                        latLng[i]=[activiteiten[i].lat,activiteiten[i].lng];
+                        var browseLocaties = GMap.addMarkerGeoLocation(latLng[i]);
+                        GMap.markerClick(browseLocaties);
+                        filterList(activiteiten[i]);
+                    }
+                }
+                //**filter op startDatum**
+                if(arrFilter[2]!=""){
+                    if(arrFilter[2]==activiteiten[i].startDatum){
+                        latLng[i]=[activiteiten[i].lat,activiteiten[i].lng];
+                        var browseLocaties = GMap.addMarkerGeoLocation(latLng[i]);
+                        GMap.markerClick(browseLocaties);
+                        filterList(activiteiten[i]);
+                    }
+                }
+                //filter op startUur
+                if(arrFilter[3]!=""){
+                    if(arrFilter[3]==activiteiten[i].startUur){
+                        latLng[i]=[activiteiten[i].lat,activiteiten[i].lng];
+                        var browseLocaties = GMap.addMarkerGeoLocation(latLng[i]);
+                        GMap.markerClick(browseLocaties);
+                        filterList(activiteiten[i]);
+                    }
+                }
+                //filter op stopDatum
+                if(arrFilter[4]!=""){
+                    if(arrFilter[4]==activiteiten[i].stopDatum){
+                        latLng[i]=[activiteiten[i].lat,activiteiten[i].lng];
+                        var browseLocaties = GMap.addMarkerGeoLocation(latLng[i]);
+                        GMap.markerClick(browseLocaties);
+                        filterList(activiteiten[i]);
+                    }
+                }
+                //filter op stopUur
+                if(arrFilter[5]!=""){
+                    if(arrFilter[5]==activiteiten[i].stopUur){
+                        latLng[i]=[activiteiten[i].lat,activiteiten[i].lng];
+                        var browseLocaties = GMap.addMarkerGeoLocation(latLng[i]);
+                        GMap.markerClick(browseLocaties);
+                        filterList(activiteiten[i]);
+                        
+                    }
+                }
+            }
+            
+            function filterList(activiteit){
+                var html = "";
+                if(activiteit.gebruikerId == self._applicationDbContext._dbData.activeuser.id){
+                    html += '<li class="activity"  id="'+activiteit.id+'" style="background-color: #345f89; color:white;">';
+                    html += '<button class="btn_X" id="'+activiteit.gebruikerId+'"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: white"; ></i></button>';    
+                }
+                else{
+                    html += '<li class="activity"  id="'+activiteit.id+'">';
+                    html +='<button class="btn_X" id="'+activiteit.gebruikerId+'"><i class="fa fa-floppy-o fa-lg" aria-hidden="true" ></i></button>';    
+                }
+                html += '<ul class="info_dtl">';
+                html += '<li><span>'+activiteit.status+'</span></li>';
+                html += '<li>Van: '+activiteit.startDatum+" "+activiteit.startUur+'</li>';
+                html += '<li>Tot: '+activiteit.stopDatum+" "+activiteit.stopUur+'</li>';
+                html += '<li>Door: '+activiteit.gebruikerNaam+'</li>';
+                html += '<li>Hond: '+activiteit.gebruikerHond+' '+activiteit.gebruikerRas+'</li>'
+                html += '<li>Locatie: '+activiteit.locatie+'</li>';
+                html += '</ul>';
+                html += '</li>';
+                browseList.innerHTML += html;
+            }
+            /*var html="";
                 GMap.init();
                 console.log("change");
                 //doorloop alle activiteiten
@@ -589,7 +703,7 @@ ready(function(){
                         latLng[i] = [activiteit[i].lat,activiteit[i].lng];
                         console.log(latLng[i])  ;
                         GMap.addMarkerGeoLocation(latLng[i]);
-                        var html="";
+                        
                             if(activiteit[i].gebruikerId == self._applicationDbContext._dbData.activeuser.id){
                                 html += '<li class="activity"  id="'+activiteit[i].id+'" style="background-color: #345f89; color:white;">';
                                 html += '<button class="btn_X" id="'+activiteit[i].gebruikerId+'"><i class="fa fa-trash fa-lg" aria-hidden="true" style="color: white"; ></i></button>';    
@@ -610,8 +724,8 @@ ready(function(){
                             html += '</li>';
                             browseList.innerHTML = html;
                     }
-                }
-            });
+                }*/
+
         },
 
 
@@ -751,9 +865,10 @@ ready(function(){
             for(var i=0; i<profielen.length;i++){
                 if(profielen[i].id == this._applicationDbContext._dbData.activeuser.id){
                     //profiel gevonden -> alle opgeslagen activiteiten doorlopen
+                    var html = "";
                     for(var j=0; j<profielen[i].opgeslagenActiviteiten.length;j++){
                        var activiteit = profielen[i].opgeslagenActiviteiten[j];
-                       var html = "";
+                       
                        var today = new Date();
                        var dag = today.getDate();
                        var maand = today.getMonth()+1;

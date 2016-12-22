@@ -19,9 +19,6 @@
         + '&libraries=places'
         + '&callback=initGoogleMaps';
     document.body.appendChild(script);
-    if(document.querySelector(".browse")!=null){
-        document.querySelector(".placeholderMap").style.zIndex= "-50";
-    }
     
 
     
@@ -41,6 +38,7 @@ var GMap = {
             center: new google.maps.LatLng(51.048017, 3.727666)
         }
         this._map = new google.maps.Map(document.querySelector('.map'), mapOptions);
+
         google.maps.visualRefresh = true;
         google.maps.event.trigger(this._map, 'resize');
         
@@ -50,9 +48,11 @@ var GMap = {
         this._markersTreesInventory = [];
         this._markerClusterTreesInventory = null;
         if(document.querySelector('.hondenvoorzieningen')!=null){
-          this._locations = this.getLocations();  
+          this._locations = this.getLocations();
+          if(this._locations!=null){
+            this.clickDataMarker(this._locations);
+          }
         }
-        
     },
     "addMarkerGeoLocation": function(geoLocation) {
         this._geoLocationMarker = new google.maps.Marker({
@@ -95,19 +95,18 @@ var GMap = {
           var arrMarkers = this.addMarkerGeoLocation(latLng);
           
         }
-        this.markerClick(arrMarkers);
+        return arrMarkers;
     },
 
     "markerClick":function(arrMarkers){
         var self = this;
         for(var i=0; i<arrMarkers.length; i++){
             google.maps.event.addListener(arrMarkers[i],"click",function(ev){
-        
                 if(document.querySelector(".browseList")){
                     //als we op browse pagina zitten
                     //haal de activiteit met dezelfde lat en lng op
                     var dbActiviteiten = applicationDbContext._dbData.activiteiten;
-                    var html ="";
+                    var html = "";
                     for(var j=0; j<dbActiviteiten.length;j++){
                         //haal de coordinaten uit de local storage
                         var dbLat = dbActiviteiten[j].lat;
@@ -119,7 +118,7 @@ var GMap = {
                         if(dbLat == mapLat && dbLng == mapLng){
                             if(dbActiviteiten[j]!=undefined){
                             //gevonden -> schrijf de locatie in de placeholderMap
-                            html += '<ul class="placeholderMapList">';
+                            html += '<ul class="placeholderMapListActiviteit">';
                             html +='<li><strong>'+dbActiviteiten[j].status+'</strong></li>';
                             html +='<li>Van: '+dbActiviteiten[j].startDatum+' '+dbActiviteiten[j].startUur +'</li>';
                             html +='<li>Tot: '+dbActiviteiten[j].stopDatum+" "+dbActiviteiten[j].stopUur+'</li>';
@@ -131,13 +130,24 @@ var GMap = {
                         }
                         }
                     }
-                    if(html!=null){
-                    document.querySelector(".placeholderMap").innerHTML = html;
-                    document.querySelector(".placeholderMap").style.zIndex = "3";
-                    document.querySelector(".placeholderMap").style.marginBottom = "100px";
-                    }
+                        $(".placeholderMap").css("display","inline");
+                        $(".placeholderMap").fadeIn().css({
+                            position: 'absolute',
+                        }).animate({
+                            top: '60%'
+                        },200,function(){
+
+                        });
+                        $(".placeholderMapList").html(html);
                 }
             });
         }
     },
+    "clickDataMarker":function(arrMarkers){
+        for(var i=0; i<arrMarkers.length;i++){
+            google.maps.event.addListener(arrMarkers[i],"click",function(ev){
+                console.log(this.title);
+            });
+        }
+    }
 };

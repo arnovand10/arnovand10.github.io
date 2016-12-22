@@ -50,20 +50,41 @@
 	});
 	
 
-	$(".toggleMap").click(function(){
-		if(this.innerHTML == "Map"){
-			this.innerHTML = "Lijst";
-			$(".browseList").css('visibility','hidden');
-			$(".browseList").css('z-index',"-50");
-			$(".map").css('visibility','visible');
-			$(".map").css('z-index','0');
+	$(".toggleMap").click(function(e){
+		console.log(false);
+		if($(this).hasClass("fa-map")){
+			console.log(true);
+			$(this).removeClass("fa-map").addClass("fa-list");
+			$(".map").fadeIn().css('display','inline');
+			$(".browseList").fadeOut().css('display','none');
+			
 		}else{
-			this.innerHTML = "Map";
-			$(".map").css('visibility','hidden');
-			$(".map").css('z-index',"-50");
-			$(".browseList").css('visibility','visible');
-			$(".browseList").css('z-index','0');
-			$(".activity").css('')
+			$(this).removeClass("fa-list").addClass("fa-map");
+			$(".map").fadeOut().css('display','none');
+			$(".placeholderMap").fadeOut().css('display','none');
+			$(".browseList").css('display','inline');
 		}
+	});
+
+	$(".toggleFilter").click(function(e){
+		if($(".filter").position().left == "0"){
+			$(".filter").animate({
+				left: "-70vw"
+			},500);	
+		}else{
+			$(".filter").animate({
+				left: "0vw"
+			},500);
+		}
+	});
+	
+	$(".sluiten").click(function(){
+		console.log("click");
+		$(".placeholderMap").fadeOut().css({
+            position: 'absolute',
+        }).animate({
+            top: '1000',
+        },800,function(){
+        });
 	});
 })();

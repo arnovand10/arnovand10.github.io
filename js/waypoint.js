@@ -8,6 +8,10 @@ $('.about').css({
 
 
 
+$("#btnreg").click(function(ev){
+	ev.preventDefault();
+});
+
 $(".wregister").waypoint(function(){
 	$(".register").animate({
 		opacity: "1"
