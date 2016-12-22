@@ -11,7 +11,7 @@ ready(function(){
             this._unitTesting = false; // Unit Testing the ApplicationDbContext or not
 
             this._applicationDbContext = applicationDbContext; // Reference to the ApplicationDbContext object
-            this._applicationDbContext.init('ahs.dds.WAF'); // Intialize the ApplicationDbContext with the connection string as parameter value
+            this._applicationDbContext.init('ahs.ab.WAF'); // Intialize the ApplicationDbContext with the connection string as parameter value
 
             //user manager verwerkt login
             this._userManager = UserManager;
@@ -104,7 +104,9 @@ ready(function(){
                     $(".filter").animate({
                         left: "-70vw"
                     },500); 
-                    self.filterActivities(self._activiteiten);    
+                    self.filterActivities(self._activiteiten);
+                    self.addOrDeleteActivities();
+                
                 });
                 document.querySelector(".btnReset").addEventListener("click",function(e){
                     e.preventDefault();
@@ -118,6 +120,8 @@ ready(function(){
                         $(".browseList").fadeOut().css('display','none');
                     }
                     self.activiteiten = self.getActivities();
+                    self.addOrDeleteActivities();
+                
                 });
                 if(this._activiteiten != null){
                     this.addOrDeleteActivities();
@@ -137,6 +141,16 @@ ready(function(){
             this._hondenvoorzieningenPage = document.querySelector(".hondenvoorzieningen");
             if(this._hondenvoorzieningenPage != null){
                 GMap.init();
+                this.urlYQL =  "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22Gent%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
+               /* this.parsed = $.ajax({
+                    type: "GET", 
+                    url: this.urlYQL,
+                    async: false,
+                }).responseText;
+                this.parseRespond = JSON.parse(this.parsed);*/
+                Utils.getJSONPByPromise(this.urlYQL);
+                console.log(this.parsed);
+                console.log(this.parseRespond);
             }
             
 

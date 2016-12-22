@@ -16,3 +16,11 @@
 	height: auto;
 	background-color: white;
 }
+
+@media screen and (min-width: 960px){
+	.contact{
+		iframe{
+			display: inline-block;
+		}
+	}
+}
