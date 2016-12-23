@@ -1,5 +1,4 @@
-$(".register").css("opacity","0");
-$(".bregister").css("opacity","0");
+$(".form_register").css("opacity","0");
 $(".bhome").css("opacity","0");
 $('.about').css({
 	"opacity":"0",
@@ -13,12 +12,9 @@ $("#btnreg").click(function(ev){
 });
 
 $(".wregister").waypoint(function(){
-	$(".register").animate({
+	$(".form_register").animate({
 		opacity: "1"
 	},1500);
-	$(".bregister").animate({
-		opacity: "1"
-	},2000);
 	
 },"100vh");
 

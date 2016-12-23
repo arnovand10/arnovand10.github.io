@@ -33,15 +33,52 @@ ready(function(){
            	//index.html/#home
            	this._formLogin = document.querySelector(".form_home");
            	this._btnLogin = document.querySelector(".btnLogin");
+            
         	//data ophalen bij login
         	if(this._formLogin!=null){
            		this.loginEventListeners();
+                if(this._applicationDbContext._dbData.activeuser != null){
+                    
+                    //disable inlogveld en register veld
+                    var inputvelden = document.querySelectorAll(".form_home>input");
+                    for(var i=0; i<inputvelden.length;i++){
+                        inputvelden[i].disabled = true;
+                    }
+                    document.querySelector(".form_home").style.display = "none";
+                    // toon weer
+                    this.getWeather();
+                }else{
+                    var inputvelden = document.querySelectorAll(".form_home>input");
+                    for(var i=0; i<inputvelden.length;i++){
+                        inputvelden[i].disabled = false;
+                    }
+                }
            	}
 
            	//index.html/#register
            	this._formRegister = document.querySelector(".form_register");
            	if(this._formRegister != null){
            		this.registerEventListeners();
+                //disablen van register form wanneer de gebruiker is ingelogd
+                if(this._applicationDbContext._dbData.activeuser != null){
+                    console.log("ingelogd");
+                    var inputvelden2 = document.querySelectorAll(".form_register>input");
+                    var buttonRegister = document.querySelector(".form_register>button");
+
+                    for(var i=0; i<inputvelden2.length;i++){
+                        inputvelden2[i].disabled = true;
+                    }
+                    buttonRegister.disabled = true;
+                    document.querySelector(".infoRegister").innerHTML = "U bent al geregistreerd!"
+                }else{
+                    console.log("uitgelogd");
+                    var inputvelden2 = document.querySelectorAll(".form_register>input");
+                    var buttonRegister = document.querySelector(".form_register>button");
+                    for(var i=0; i<inputvelden2.length;i++){
+                        inputvelden2[i].disabled = false;
+                    }
+                    buttonRegister.disabled = true;
+                }
            	}
 
            	//uitloggen
@@ -141,13 +178,7 @@ ready(function(){
             this._hondenvoorzieningenPage = document.querySelector(".hondenvoorzieningen");
             if(this._hondenvoorzieningenPage != null){
                 GMap.init();
-                this.urlYQL =  "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22Gent%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
-               /* this.parsed = $.ajax({
-                    type: "GET", 
-                    url: this.urlYQL,
-                    async: false,
-                }).responseText;
-                this.parseRespond = JSON.parse(this.parsed);*/
+            
                 Utils.getJSONPByPromise(this.urlYQL);
                 console.log(this.parsed);
                 console.log(this.parseRespond);
@@ -162,6 +193,27 @@ ready(function(){
             this.updateUIProfilesList(); // Update UI for list of profiles
 
 
+        },
+
+        "getWeather":function(){
+            var urlYQL = "https://query.yahooapis.com/v1/public/yql?";
+            var query = "q=select * from weather.forecast where u='c' and woeid in (select woeid from geo.places(1) where text='ghent')";
+            var format = "&format=json";
+            var parseYQL = urlYQL+query+format;
+            var getJSON =$.ajax({type: "GET", url: parseYQL, async: false}).responseText;
+            var getWeather = JSON.parse(getJSON);
+            console.log(getWeather)
+            var weatherPlaceholder = document.querySelector(".weather");
+            if(getWeather.query.results!=null){
+                var weersvoorspelling = "<p>"+getWeather.query.results.channel.description+"</p";
+                weersvoorspelling += "<p>"+getWeather.query.results.channel.item.description+"</p>";
+                //split op '(' omdat de result iets tussen '(' weergeeft dat we niet nodig hebben
+                var text = weersvoorspelling.split("(");
+                weatherPlaceholder.innerHTML = text[0];
+            }
+            else{
+                weatherPlaceholder.innerHTML = "<p>YQL weersvoorspelling werd niet geladen, onze excuses.</p>";
+            }
         },
 
         "checkCurrentPage":function(){

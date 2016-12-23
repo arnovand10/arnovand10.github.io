@@ -12,6 +12,4 @@
 <script src="{{'/js/navigation.js' | 'prepend: site.baseurl'}}"></script>
 
 <script src="{{'/js/map.js' | 'prepend: site.baseurl'}}"></script>
-<!-- <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxgvRb0TRvSNxsMAkjfQbJyoUkY-OBqTo&callback=initMap">
-</script> -->
+<script src="{{https://query.yahooapis.com/v1/public/yql?q=select wind from weather.forecast where woeid in (select woeid from geo.places(1) where text='Ghent')&format=json&callback=json}}"></script>
